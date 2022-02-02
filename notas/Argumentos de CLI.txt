@@ -1,0 +1,7 @@
+***Parametros en la funcion main
+El sistema operativo envia como primer parametro el nombre del programa.
+
+***buffer overflow
+escribir por fuera del tamaño que se tiene reservado, basta con verificar 
+si la cadena tiene el tamaño necesario antes de realizar la copia.
+

@@ -1,0 +1,67 @@
+https://devdocs.io/c/
+
+***instalar C en linux***
+    $sudo apt install gcc 
+    $sudo apt update 
+***compilar programa en linux***
+    $ gcc -o [nombre archivo] [archivo a compilar]
+    $ ./[nombre del archivo output] 
+
+Basic Types:
+Aritmeticos
+    (A) Valores enteros 
+                    char 1 Byte -128 to 127
+                    unsigned char 1 Byte  0 to 255
+
+                    int 4 Bytes -2,147,483,648 to 2,147,483,647
+                    unsigned int 2 Bytes 0 to 4,294,967,295
+
+                    short 2 Bytes -32,768 to 32,767
+                    unsigned short 2 bytes 0 to 65,535
+
+                    long 8 bytes -9223372036854775808 to 9223372036854775807
+                    unsigned long 0 to 184467440737095511615
+
+
+
+    (B) De punto Flotante float
+                    float 4 bytes 1.2E-38 to 3.4E+38   6 deciaml places
+                    double 8 bytes 2.3E-308 to 1.7E308   15 decimal places
+                    long double 10 bytes 3.4E-4932 to 1.1E+4932    19 decimal places
+
+
+    void : Especifica que no hay valor disponible, se usa en 3 escenarios
+            1.- Función retorna un tipo de datos void   
+                void funcion()
+            2.- Función tiene argumentos de tipo void
+                int rand(void)
+            3.- Puntero o apuntador que va a la dirección en memoria de un objeto en la memoria de un objeto,
+            pero no le importa el tipo de dato que tenga
+                (un casteo es agarrar una informacion y transoformarla a un tipo de dato especifico)
+
+%d Se utiliza para representar una parte de la memoria como un número entero.
+
+Placeholders usados en C
+
+%c - a character
+
+%s - a string
+
+%d - a decimal integer
+
+%o - an octal integer
+
+%x - a hexadecimal integer
+
+%p - an address (pointer)
+
+%f - for floats
+
+%e - a floating point number in scientific notation
+
+%E - a floating point number in scientific notation
+
+%% - The % symbol
+
+
+
