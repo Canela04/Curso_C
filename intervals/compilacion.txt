@@ -1,0 +1,2 @@
+ gcc concordancia.c outranking.c -o discordancia
+ 
