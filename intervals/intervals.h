@@ -6,6 +6,14 @@ typedef struct INTERVAL {
     float upper;
 }INTERVAL;
 
+INTERVAL VectorW[100], vectorQ[100], vectorV[100], lambda, C_index;
+int k, coaliciones[100];
+float fky_fkx[100];
+float fkx_fky[100];
+float wk_lowerC, wk_upperC, wk_lowerD, wk_upperD;
+float d_index;
+
+
 void run(int);
 void initValuesK3();
 void initValuesK5();
@@ -30,5 +38,5 @@ INTERVAL intervalSub3(float, float, INTERVAL);
 float coalitions(INTERVAL, float, int);
 INTERVAL concordance_index();
 float discordance_index();
-
+void read_values();
 #endif

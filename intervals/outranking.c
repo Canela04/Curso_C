@@ -4,15 +4,6 @@
 #include<time.h>
 #include"intervals.h"
 
-
-INTERVAL VectorW[100], vectorQ[100], vectorV[100], lambda, C_index;
-int k, coaliciones[100];
-float fky_fkx[100];
-float fkx_fky[100];
-float wk_lowerC, wk_upperC, wk_lowerD, wk_upperD;
-float d_index;
-
-
 void initValuesK3(){
     //Lambda
     lambda.lower=0.57;
@@ -444,5 +435,9 @@ float discordance_index(){
     }
     d_index = 1 - max;
     return d_index;
+    
+}
+
+void read_values(){
     
 }
