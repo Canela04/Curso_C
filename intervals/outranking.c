@@ -5,40 +5,7 @@
 #include"intervals.h"
 
 void initValuesK3(){
-    //Lambda
-    lambda.lower=0.57;
-    lambda.upper=0.89;
-
-    //Peso W<[0.35,0.70], [0.25,0.35], [0.40,0.60]>
-    VectorW[0].lower=0.35;
-    VectorW[0].upper=0.70;
-
-    VectorW[1].lower=0.25;
-    VectorW[1].upper=0.35;
-
-    VectorW[2].lower=0.40;
-    VectorW[2].upper=0.60;
-
-    //Indiferencia Q<[3.5,7.0], [6.5,9.5], [5.5,7.5]>
-    vectorQ[0].lower=3.5;
-    vectorQ[0].upper=7;
-
-    vectorQ[1].lower=6.5;
-    vectorQ[1].upper=9.5;
-
-    vectorQ[2].lower=5.5;
-    vectorQ[2].upper=7.5;
-
-    //Veto V<[0.,0.70], [0.25,0.35], [0.40,0.60]>
-    vectorV[0].lower=4;
-    vectorV[0].upper=7.5;
-
-    vectorV[1].lower=7;
-    vectorV[1].upper=11;
-
-    vectorV[2].lower=6;
-    vectorV[2].upper=9;
-
+   
     //fky - fkx
     fky_fkx[0] = 8.5;
     fky_fkx[1] =2.5; 
@@ -52,58 +19,7 @@ void initValuesK3(){
 }
 
 void initValuesK5(){
-    //Lambda
-    lambda.lower=0.57;
-    lambda.upper=0.89;
-
-    //Peso W
-    VectorW[0].lower=0.15;
-    VectorW[0].upper=0.33;
-
-    VectorW[1].lower=0.11;
-    VectorW[1].upper=0.37;
-
-    VectorW[2].lower=0.07;
-    VectorW[2].upper=0.23;
-
-    VectorW[3].lower=0.03;
-    VectorW[3].upper=0.17;
     
-    VectorW[4].lower=0.17;
-    VectorW[4].upper=0.31;
-
-    //Indiferencia Q
-    vectorQ[0].lower=4.30;
-    vectorQ[0].upper=8.3;
-
-    vectorQ[1].lower=6.50;
-    vectorQ[1].upper=9.5;
-
-    vectorQ[2].lower=5.50;
-    vectorQ[2].upper=6.3;
-
-    vectorQ[3].lower=8.70;
-    vectorQ[3].upper=12.30;
-
-    vectorQ[4].lower=9.00;
-    vectorQ[4].upper=12.70;
-
-    //Veto V
-    vectorV[0].lower=4.40;
-    vectorV[0].upper=8.50;
-
-    vectorV[1].lower=7.70;
-    vectorV[1].upper=12.30;
-
-    vectorV[2].lower=5.91;
-    vectorV[2].upper=7.20;
-
-    vectorV[3].lower=8.80;
-    vectorV[3].upper=13.00;
-
-    vectorV[4].lower=9.30;
-    vectorV[4].upper=13.00;
-
     //fky - fkx
     fky_fkx[0] = -7.00;
     fky_fkx[1] = -12.00; 
@@ -120,103 +36,7 @@ void initValuesK5(){
 }
 
 void initValuesK10(){
-    //Lambda
-    lambda.lower=0.57;
-    lambda.upper=0.89;
-
-    //Peso W
-    VectorW[0].lower=0.15;
-    VectorW[0].upper=0.33;
-
-    VectorW[1].lower=0.11;
-    VectorW[1].upper=0.37;
-
-    VectorW[2].lower=0.07;
-    VectorW[2].upper=0.23;
-
-    VectorW[3].lower=0.03;
-    VectorW[3].upper=0.17;
-    
-    VectorW[4].lower=0.17;
-    VectorW[4].upper=0.31;
-
-    VectorW[5].lower=0.13;
-    VectorW[5].upper=0.22;
-
-    VectorW[6].lower=0.05;
-    VectorW[6].upper=0.20;
-
-    VectorW[7].lower=0.15;
-    VectorW[7].upper=0.30;
-
-    VectorW[8].lower=0.04;
-    VectorW[8].upper=0.24;
-    
-    VectorW[9].lower=0.07;
-    VectorW[9].upper=0.31;
-
-    //Indiferencia Q
-    vectorQ[0].lower=4.30;
-    vectorQ[0].upper=8.3;
-
-    vectorQ[1].lower=6.50;
-    vectorQ[1].upper=9.5;
-
-    vectorQ[2].lower=5.50;
-    vectorQ[2].upper=7.5;
-
-    vectorQ[3].lower=8.70;
-    vectorQ[3].upper=12.30;
-
-    vectorQ[4].lower=6.12;
-    vectorQ[4].upper=8.24;
-
-    vectorQ[5].lower=5.30;
-    vectorQ[5].upper=9.60;
-
-    vectorQ[6].lower=3.80;
-    vectorQ[6].upper=6.10;
-
-    vectorQ[7].lower=2.10;
-    vectorQ[7].upper=7.70;
-
-    vectorQ[8].lower=4.66;
-    vectorQ[8].upper=7.33;
-
-    vectorQ[9].lower=1.50;
-    vectorQ[9].upper=4.70;
-
-    //Veto V
-    vectorV[0].lower=4.40;
-    vectorV[0].upper=8.50;
-
-    vectorV[1].lower=7.70;
-    vectorV[1].upper=12.30;
-
-    vectorV[2].lower=6.30;
-    vectorV[2].upper=9.10;
-
-    vectorV[3].lower=9.10;
-    vectorV[3].upper=13.00;
-
-    vectorV[4].lower=6.75;
-    vectorV[4].upper=8.70;
-
-    vectorV[5].lower=5.50;
-    vectorV[5].upper=10.00;
-
-    vectorV[6].lower=4.50;
-    vectorV[6].upper=8.30;
-
-    vectorV[7].lower=3.33;
-    vectorV[7].upper=8.31;
-
-    vectorV[8].lower=5.27;
-    vectorV[8].upper=8.12;
-
-    vectorV[9].lower=2.30;
-    vectorV[9].upper=5.81;
-
+   
     //fky - fkx
     fky_fkx[0] =-7;
     fky_fkx[1] =-12; 
@@ -438,6 +258,76 @@ float discordance_index(){
     
 }
 
-void read_values(){
+void read_values(char *arch, int k){
     
+    FILE *in = fopen(arch, "r");
+    if(in==NULL){
+        perror("Error en la apertura del archivo\n");
+        exit(1);
+    }
+
+    char caracter;
+    int nl = 0;
+    int cm = 0, bl = 0;
+    char c;
+ 
+    char buffer[5000];
+    int linea = 0;
+
+    while (fgets(buffer,2000,in))
+    {
+        char delim[] = " ,";
+        char *ptr = strtok(buffer, delim);
+        int cont_in=0;
+        while (ptr != NULL)
+        {
+            if(linea == 0){
+                lambda.lower = atof(ptr);
+                ptr = strtok(NULL, delim);
+                lambda.upper = atof(ptr);
+            }
+            if (linea == 1)
+            {
+                VectorW[cont_in].lower= atof(ptr); 
+                ptr = strtok(NULL, delim);
+                VectorW[cont_in].upper= atof(ptr);
+            }
+            if (linea == 2)
+            {
+                vectorQ[cont_in].lower= atof(ptr); 
+                ptr = strtok(NULL, delim);
+                vectorQ[cont_in].upper= atof(ptr);
+            }
+            if (linea == 3)
+            {
+                vectorV[cont_in].lower= atof(ptr); 
+                ptr = strtok(NULL, delim);
+                vectorV[cont_in].upper= atof(ptr);
+            }
+
+            ptr = strtok(NULL, delim);
+            cont_in++;
+        }
+        linea++;
+    }
+    fclose(in);
+    
+    printf("Lambda inferior: %f\nLambda Superior: %f\n",lambda.lower,lambda.upper);
+
+    printf("VectorW\n");
+    for (int i = 0; i < k; i++)
+    {
+        printf("Intervalo %d\t[ %f, %f]\n",i+1,VectorW[i].lower,VectorW[i].upper);
+    }
+    printf("VectorQ\n");
+    for (int i = 0; i < k; i++)
+    {
+        printf("Intervalo %d\t[ %f, %f]\n",i+1,vectorQ[i].lower,vectorQ[i].upper);
+    }
+    printf("VectorV\n");
+    for (int i = 0; i < k; i++)
+    {
+        printf("Intervalo %d\t[ %f, %f]\n",i+1,vectorV[i].lower,vectorV[i].upper);
+    }
+
 }

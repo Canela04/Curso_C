@@ -39,4 +39,5 @@ float coalitions(INTERVAL, float, int);
 INTERVAL concordance_index();
 float discordance_index();
 void read_values();
+
 #endif
