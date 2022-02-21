@@ -4,81 +4,49 @@
 #include<time.h>
 #include"intervals.h"
 
-void initValuesK3(){
-   
-    //fky - fkx
-    fky_fkx[0] = 8.5;
-    fky_fkx[1] =2.5; 
-    fky_fkx[2] =6.7;
 
-    //fkx - fky
-    fkx_fky[0]=4.5;
-    fkx_fky[1]=2.5;
-    fkx_fky[2]=10;
+float Beta = 0.63;
+int k;
 
+
+void initValuesK2(){
+    fkx[0][0]=12;
+    fkx[0][1]=23;
+    fkx[0][2]=32;
+    fkx[1][0]=42;
+    fkx[1][1]=32;
+    fkx[1][2]=30;
+
+    /*for (int i = 0; i < 2; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            printf("%f\t",fkx[i][j]);
+        }
+        printf("\n");
+        
+    }*/
 }
 
 void initValuesK5(){
-    
-    //fky - fkx
-    fky_fkx[0] = -7.00;
-    fky_fkx[1] = -12.00; 
-    fky_fkx[2] = -4.90;
-    fky_fkx[3] = -10.00; 
-    fky_fkx[4] = -11.00;
-
-    //fkx - fky
-    fkx_fky[0]= 7.00;
-    fkx_fky[1]= 12.00;
-    fkx_fky[2]= 4.90;
-    fkx_fky[3]= 10.00;
-    fkx_fky[4]= 11.00;
+   /* fk1x[0]= 20;
+    fk1x[1]= 25;
+    fk1x[2]= 13.90;
+    fk1x[3]= 30;
+    fk1x[4]= 20;*/
 }
 
 void initValuesK10(){
-   
-    //fky - fkx
-    fky_fkx[0] =-7;
-    fky_fkx[1] =-12; 
-    fky_fkx[2] =1.20;
-    fky_fkx[3] =5.00; 
-    fky_fkx[4] =-7.42;
-    fky_fkx[5] =-3.00;
-    fky_fkx[6] =3.80; 
-    fky_fkx[7] =4.00;
-    fky_fkx[8] =-8.00; 
-    fky_fkx[9] =-4.00;
-
-    //fkx - fky
-    fkx_fky[0]=7.00;
-    fkx_fky[1]=12.00;
-    fkx_fky[2]=-1.20;
-    fkx_fky[3]=-5.00;
-    fkx_fky[4]=7.42;
-    fkx_fky[5]=3.00;
-    fkx_fky[6]=-3.80;
-    fkx_fky[7]=-4.00;
-    fkx_fky[8]=8.00;
-    fkx_fky[9]=4.00;
-}
-
-void run(int m){
-    k=m;
-    if(k==3){
-    initValuesK3();
-    }
-    if(k==5){
-    initValuesK5();
-    }
-    if(k==10){
-    initValuesK10();
-    }
-
-    C_index = concordance_index();
-    printf("\nIndice de concordancia\nC(x,y)=[ %f, %f ]\n", C_index.lower, C_index.upper);
-
-    d_index = discordance_index();
-    printf("\nIndice de discordancia\nd(x,y)= %f\n", d_index);
+    /*fk1x[0]=20;
+    fk1x[1]=25;
+    fk1x[2]=8.80;
+    fk1x[3]=8;
+    fk1x[4]=23.12;
+    fk1x[5]=8;
+    fk1x[6]=5.30;
+    fk1x[7]=23;
+    fk1x[8]=20;
+    fk1x[9]=9;*/
 }
 
 float PED(INTERVAL  intA, INTERVAL intB){
@@ -86,33 +54,6 @@ float PED(INTERVAL  intA, INTERVAL intB){
 
     ped = ( (intA.upper - intB.lower)/
     ( ( intA.upper-intA.lower ) + ( intB.upper - intB.lower) ) );
-
-    if (ped > 1){
-        return 1;
-    }else if (ped >= 0 && ped <= 1){
-        return ped;
-    }else{
-        return 0;
-    }
-}
-
-INTERVAL intervalSum(INTERVAL  intA, INTERVAL intB, INTERVAL sum){
-    sum.lower = intA.lower + intB.lower;
-    sum.upper= intA.upper + intB.upper;
-    return sum;
-}
-
-INTERVAL intervalSub(INTERVAL  intA, INTERVAL intB, INTERVAL sub){
-    sub.lower = intA.lower - intB.lower;
-    sub.upper= intA.upper - intB.upper;
-    return sub;
-}
-
-//Sobrecarga PED
-float PED1(INTERVAL  intA, float intB){
-    float ped;
-
-    ped = ( (intA.upper - intB)/( ( intA.upper-intA.lower ) ) );
 
     if (ped > 1){
         return 1;
@@ -137,90 +78,48 @@ float PED2(float  intA, INTERVAL intB){
     }
 }
 
-float PED3(float  intA, float intB){
-    float ped;
-
-    ped = (intA - intB);
-
-    if (ped >= 1){
-        return 1;
-    }else{
-        return 0;
-    }
-
-}
-
-//Sobrecarga SUMA
-INTERVAL intervalSum1(INTERVAL  intA, float intB, INTERVAL sum){
-    sum.lower = intA.lower + intB;
-    sum.upper= intA.upper + intB;
-    return sum;
-}
-
-INTERVAL intervalSum2(float  intA, INTERVAL intB, INTERVAL sum){
-    sum.lower = intA + intB.lower;
-    sum.upper= intA+ intB.upper;
-    return sum;
-}
-
-INTERVAL intervalSum3(float  intA, float intB, INTERVAL sum){
-    sum.lower = intA + intB;
-    sum.upper= intA + intB;
-    return sum;
-}
-
-//Sobrecarga RESTA
-INTERVAL intervalSub1(INTERVAL  intA, float intB, INTERVAL sub){
-    sub.lower = intA.lower - intB;
-    sub.upper= intA.upper - intB;
-    return sub;
-}
-
-INTERVAL intervalSub2(float  intA, INTERVAL intB, INTERVAL sub){
-    sub.lower = intA - intB.lower;
-    sub.upper= intA - intB.upper;
-    return sub;
-}
-
-INTERVAL intervalSub3(float  intA, float intB, INTERVAL sub){
-    sub.lower = intA - intB;
-    sub.upper= intA - intB;
-    return sub;
-}
-
-float coalitions(INTERVAL qk, float fky_fkx, int i){
+float coalitions(INTERVAL qk, float fky_fkx){
     float ped;
     INTERVAL _qk;
     _qk.lower = (qk.upper*(-1));
     _qk.upper = (qk.lower*(-1));
     //printf("Valores de qk en coalicion [%f,%f]\n",_qk.lower, _qk.upper);
     ped = PED2 (fky_fkx, _qk);//Cambio revisar implementacion!
-    printf("\nPED con %f, es = %f\n", fky_fkx, ped);
+    //printf("\nPED con %f, es = %f\n", fky_fkx, ped);
     return ped;
 }
 
-INTERVAL concordance_index(){
+COALITION concordance_index(int i,int j,int z){
+    COALITION sumW;
+    //float wk_lowerC = 0, wk_upperC=0, wk_lowerD=0, wk_upperD=0;
+    sumW.lowerC= 0;
+    sumW.upperC= 0;
+    sumW.lowerD= 0;
+    sumW.upperD= 0;
     
-    for (int i = 0; i < k; i++)
-    {  
-        if(coalitions(vectorQ[i], fky_fkx[i], i) >= 0.5 ){
-            printf("Coalicion de concordancia\n");
-            wk_lowerC+=VectorW[i].lower;
-            wk_upperC+=VectorW[i].upper;
-            coaliciones[i]=1;
-        }else{
-            printf("Coalicion de discordancia\n");
-            wk_lowerD += VectorW[i].lower;
-            wk_upperD += VectorW[i].upper;
-            coaliciones[i]=0;
-        }
+    if(coalitions(vectorQ[z], (fkx[z][i]-fkx[z][j])) >= 0.5 ){
+        /*printf("Concordancia K=%d! resta:[%f] - [%f]\n",z,fkx[z][i],fkx[z][j]);*/
+        sumW.lowerC = VectorW[z].lower;
+        sumW.upperC = VectorW[z].upper;
+        /*printf("comprobar lowerC: %f\t%f\n",VectorW[z].lower,sumW.lowerC);
+        printf("Comprobar upperC: %f\t%f\n",VectorW[z].upper,sumW.upperC);*/
+
+    }else{
+        //printf("Coalicion de discordancia\n");
+        /*printf("Discordancia K=%d! resta:[%f] - [%f]\n",z,fkx[z][i],fkx[z][j]);*/
+        sumW.lowerD = VectorW[z].lower;
+        sumW.upperD = VectorW[z].upper;
+        /*printf("comprobar lowerD: %f\t%f\n",VectorW[z].lower,sumW.lowerD);
+        printf("Comprobar upperD: %f\t%f\n",VectorW[z].upper,sumW.upperD);*/
+        
     }
-    printf("\nWk_lowerC= %f\n",wk_lowerC);
+    //printf("\n");
+    /*printf("\nWk_lowerC= %f\n",wk_lowerC);
     printf("Wk_upperC= %f\n",wk_upperC);
     printf("Wk_lowerD= %f\n",wk_lowerD);
-    printf("Wk_upperD= %f\n",wk_upperD);
+    printf("Wk_upperD= %f\n",wk_upperD);*/
 
-    if((wk_lowerC + wk_upperD) >= 1){
+    /*if((wk_lowerC + wk_upperD) >= 1){
         C_index.lower=wk_lowerC;
     }else{
         C_index.lower=(1-wk_upperD);
@@ -231,34 +130,45 @@ INTERVAL concordance_index(){
         C_index.upper = wk_upperC;
     }else{
         C_index.upper = (1-wk_lowerD);
-    }
+    }*/
 
-    return C_index;
+    return sumW;
     
 }
 
-float discordance_index(){
-
+/*float discordance_index(int index){
+    float d_index;
     float max=0 , aux;
-    for (int i = 0; i < k; i++)
+    if (coaliciones[index]==0)
     {
-        if (coaliciones[i]==0)
+        aux = PED2((fkx[index]-fky[index]), vectorV[index]);
+        if (aux > max)
         {
-            aux = PED2(fkx_fky[i], vectorV[i]);
-            if (aux > max)
-            {
-                max = aux;
-            }
-            
+            max = aux;
         }
-        
     }
     d_index = 1 - max;
     return d_index;
-    
-}
+}*/
 
-void read_values(char *arch, int k){
+/*float outranking(){
+    printf("\nC_index [%f,%f]\n", C_index.lower,C_index.upper);
+    printf("Lambda [%f,%f]\n", lambda.lower,lambda.upper);
+
+    float cxy_lambda = PED(C_index,lambda);
+    printf("PED: Cxy y Lambda: %f\n\n", cxy_lambda);
+
+    if(cxy_lambda < d_index)
+    {
+        return cxy_lambda;
+    }
+    else{
+        return d_index;
+    }
+
+}*/
+
+void read_values(char const *arch){
     
     FILE *in = fopen(arch, "r");
     if(in==NULL){
@@ -312,7 +222,7 @@ void read_values(char *arch, int k){
     }
     fclose(in);
     
-    printf("Lambda inferior: %f\nLambda Superior: %f\n",lambda.lower,lambda.upper);
+    /*printf("Lambda inferior: %f\nLambda Superior: %f\n",lambda.lower,lambda.upper);
 
     printf("VectorW\n");
     for (int i = 0; i < k; i++)
@@ -328,6 +238,117 @@ void read_values(char *arch, int k){
     for (int i = 0; i < k; i++)
     {
         printf("Intervalo %d\t[ %f, %f]\n",i+1,vectorV[i].lower,vectorV[i].upper);
+    }*/
+}
+
+
+int xdominatey(int index1, int index2){
+	int atleastone = 0;
+	int minlimit = 0;
+	int i;
+
+	/*for(i = 0; i < k; i++){
+		if(T.pheromones[index1].Fx[i] > T.pheromones[index2].Fx[i]){
+			minlimit++; 
+		}
+		if(T.pheromones[index1].Fx[i] < T.pheromones[index2].Fx[i]){
+			atleastone++;
+		}
+	}
+
+	if(minlimit == 0 && atleastone > 0){
+		return 1;
+	}else{
+		return 0;
+	}*/
+}
+
+/*float sigma_xy(int index){
+    float sigma;
+    INTERVAL CXY = concordance_index(index);
+    float dxy = discordance_index(index);
+    float ped_c_lambda = PED(CXY,lambda);
+
+    if (ped_c_lambda<dxy){
+        return ped_c_lambda;
+    }
+    else{
+        return dxy;
     }
 
+}*/
+
+int XYS(int index){
+    
+}
+
+void run(int m){
+    k=m;
+    if(k==2){
+    initValuesK2();
+    }
+    if(k==5){
+    initValuesK5();
+    }
+    if(k==10){
+    initValuesK10();
+    }
+    int size = 3;//tamaño de la solucion
+    float sigmaArray[size][size];
+    //int xSy[size][size];
+    INTERVAL CXY[size][size];
+
+    for (int i = 0; i < size; i++)
+    {  
+        COALITION sumW;
+        //printf("entre ciclo i:%d\n:",i); 
+        for (int j = 0; j < size; j++)
+        {
+            float wk_lowerC = 0, wk_upperC=0, wk_lowerD = 0, wk_upperD = 0;
+            //printf("entre ciclo j:%d\n:",j); 
+            if(i != j){
+                for (int z = 0; z < k; z++)
+                {
+                    //printf("entre ciclo z%d\n:",z); 
+                    sumW = concordance_index(i,j,z);
+                    wk_lowerC += sumW.lowerC; 
+                    wk_upperC += sumW.upperC; 
+                    wk_lowerD += sumW.lowerD; 
+                    wk_upperD += sumW.upperD;
+                }
+                /*printf("lowerC: %f\n",wk_lowerC);
+                printf("upperC: %f\n",wk_upperC);
+                printf("lowerD: %f\n",wk_lowerD);
+                printf("upperD: %f\n",wk_upperD);*/
+                if((wk_lowerC + wk_upperD) >= 1){
+                    CXY[i][j].lower=wk_lowerC;
+                }else{
+                    CXY[i][j].lower=(1-wk_upperD);
+                }
+
+                if ((wk_upperC + wk_lowerD)<=1)
+                {
+                    CXY[i][j].upper = wk_upperC;
+                }else{
+                    CXY[i][j].upper = (1-wk_lowerD);
+                }
+            }
+            
+        }
+        
+    }
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {   if (i != j)
+            {
+                printf("%f,%f\t",CXY[i][j].lower,CXY[i][j].upper);
+            }else{
+                printf("null\t");
+            }
+            
+        }
+        printf("\n");  
+    } 
+    
 }

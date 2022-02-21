@@ -6,38 +6,35 @@ typedef struct INTERVAL {
     float upper;
 }INTERVAL;
 
-INTERVAL VectorW[100], vectorQ[100], vectorV[100], lambda, C_index;
-int k, coaliciones[100];
-float fky_fkx[100];
-float fkx_fky[100];
-float wk_lowerC, wk_upperC, wk_lowerD, wk_upperD;
-float d_index;
+typedef struct COALITION{
+    float lowerC;
+    float upperC;
+    float lowerD;
+    float upperD;
+}COALITION;
+
+INTERVAL VectorW[100], vectorQ[100], vectorV[100], lambda;
+float fkx[10][10];
+
+
 
 
 void run(int);
-void initValuesK3();
+void initValuesK2();
 void initValuesK5();
 void initValuesK10();
 
 float PED(INTERVAL, INTERVAL);
-INTERVAL intervalSum(INTERVAL, INTERVAL, INTERVAL);
-INTERVAL intervalSub(INTERVAL, INTERVAL, INTERVAL);
-//sobrecarga PWD
-float PED1(INTERVAL  intA, float intB);
-float PED2(float  intA, INTERVAL intB);
-float PED3(float  intA, float intB);
-//sobrecarga SUMA
-INTERVAL intervalSum1(INTERVAL, float, INTERVAL);
-INTERVAL intervalSum2(float, INTERVAL, INTERVAL);
-INTERVAL intervalSum3(float, float, INTERVAL);
-//Sobrecarga Resta
-INTERVAL intervalSub1(INTERVAL, float, INTERVAL);
-INTERVAL intervalSub2(float, INTERVAL, INTERVAL);
-INTERVAL intervalSub3(float, float, INTERVAL);
 
-float coalitions(INTERVAL, float, int);
-INTERVAL concordance_index();
+float PED2(float  intA, INTERVAL intB);
+
+float coalitions(INTERVAL, float);
+COALITION concordance_index(int, int, int);
 float discordance_index();
-void read_values();
+void read_values(char const *);
+
+float outranking();
+int XSY();
+int xdominatey();
 
 #endif
