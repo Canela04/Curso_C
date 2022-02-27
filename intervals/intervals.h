@@ -1,5 +1,6 @@
 #ifndef __INTERVALS_H
 #define __INTERVALS_H
+#include<stdbool.h>
 
 typedef struct INTERVAL {
     float lower;
@@ -11,6 +12,7 @@ typedef struct COALITION{
     float upperC;
     float lowerD;
     float upperD;
+    float dxy;
 }COALITION;
 
 INTERVAL VectorW[100], vectorQ[100], vectorV[100], lambda;
@@ -35,6 +37,6 @@ void read_values(char const *);
 
 float outranking();
 int XSY();
-int xdominatey();
+bool xdominatey();
 
 #endif

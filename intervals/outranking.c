@@ -3,11 +3,11 @@
 #include<string.h>
 #include<time.h>
 #include"intervals.h"
-
+#include<stdbool.h>
 
 float Beta = 0.63;
 int k;
-
+int size = 3;
 
 void initValuesK2(){
     fkx[0][0]=12;
@@ -16,16 +16,6 @@ void initValuesK2(){
     fkx[1][0]=42;
     fkx[1][1]=32;
     fkx[1][2]=30;
-
-    /*for (int i = 0; i < 2; i++)
-    {
-        for (int j = 0; j < 3; j++)
-        {
-            printf("%f\t",fkx[i][j]);
-        }
-        printf("\n");
-        
-    }*/
 }
 
 void initValuesK5(){
@@ -83,73 +73,35 @@ float coalitions(INTERVAL qk, float fky_fkx){
     INTERVAL _qk;
     _qk.lower = (qk.upper*(-1));
     _qk.upper = (qk.lower*(-1));
-    //printf("Valores de qk en coalicion [%f,%f]\n",_qk.lower, _qk.upper);
     ped = PED2 (fky_fkx, _qk);//Cambio revisar implementacion!
-    //printf("\nPED con %f, es = %f\n", fky_fkx, ped);
     return ped;
 }
 
 COALITION concordance_index(int i,int j,int z){
     COALITION sumW;
-    //float wk_lowerC = 0, wk_upperC=0, wk_lowerD=0, wk_upperD=0;
     sumW.lowerC= 0;
     sumW.upperC= 0;
     sumW.lowerD= 0;
     sumW.upperD= 0;
+    sumW.dxy=0;
     
     if(coalitions(vectorQ[z], (fkx[z][i]-fkx[z][j])) >= 0.5 ){
-        /*printf("Concordancia K=%d! resta:[%f] - [%f]\n",z,fkx[z][i],fkx[z][j]);*/
         sumW.lowerC = VectorW[z].lower;
         sumW.upperC = VectorW[z].upper;
-        /*printf("comprobar lowerC: %f\t%f\n",VectorW[z].lower,sumW.lowerC);
-        printf("Comprobar upperC: %f\t%f\n",VectorW[z].upper,sumW.upperC);*/
-
     }else{
-        //printf("Coalicion de discordancia\n");
-        /*printf("Discordancia K=%d! resta:[%f] - [%f]\n",z,fkx[z][i],fkx[z][j]);*/
         sumW.lowerD = VectorW[z].lower;
         sumW.upperD = VectorW[z].upper;
-        /*printf("comprobar lowerD: %f\t%f\n",VectorW[z].lower,sumW.lowerD);
-        printf("Comprobar upperD: %f\t%f\n",VectorW[z].upper,sumW.upperD);*/
-        
+        sumW.dxy = PED2(fkx[z][j]-fkx[z][i],vectorV[z]);
     }
-    //printf("\n");
-    /*printf("\nWk_lowerC= %f\n",wk_lowerC);
-    printf("Wk_upperC= %f\n",wk_upperC);
-    printf("Wk_lowerD= %f\n",wk_lowerD);
-    printf("Wk_upperD= %f\n",wk_upperD);*/
-
-    /*if((wk_lowerC + wk_upperD) >= 1){
-        C_index.lower=wk_lowerC;
-    }else{
-        C_index.lower=(1-wk_upperD);
-    }
-
-    if ((wk_upperC + wk_lowerD)<=1)
-    {
-        C_index.upper = wk_upperC;
-    }else{
-        C_index.upper = (1-wk_lowerD);
-    }*/
-
     return sumW;
-    
 }
 
-/*float discordance_index(int index){
+float discordance_index(int i, int j, int z){
     float d_index;
     float max=0 , aux;
-    if (coaliciones[index]==0)
-    {
-        aux = PED2((fkx[index]-fky[index]), vectorV[index]);
-        if (aux > max)
-        {
-            max = aux;
-        }
-    }
-    d_index = 1 - max;
+    PED2(fkx[z][j]-fkx[z][i],vectorV[z]);
     return d_index;
-}*/
+}
 
 /*float outranking(){
     printf("\nC_index [%f,%f]\n", C_index.lower,C_index.upper);
@@ -242,16 +194,15 @@ void read_values(char const *arch){
 }
 
 
-int xdominatey(int index1, int index2){
+bool xdominatey(int i, int j){
 	int atleastone = 0;
 	int minlimit = 0;
-	int i;
 
-	/*for(i = 0; i < k; i++){
-		if(T.pheromones[index1].Fx[i] > T.pheromones[index2].Fx[i]){
+	for(int z = 0; z < k; z++){
+		if(fkx[z][i] > fkx[z][j]){
 			minlimit++; 
 		}
-		if(T.pheromones[index1].Fx[i] < T.pheromones[index2].Fx[i]){
+		if(fkx[z][i] > fkx[z][j]){
 			atleastone++;
 		}
 	}
@@ -260,26 +211,15 @@ int xdominatey(int index1, int index2){
 		return 1;
 	}else{
 		return 0;
-	}*/
+	}
 }
 
-/*float sigma_xy(int index){
-    float sigma;
-    INTERVAL CXY = concordance_index(index);
-    float dxy = discordance_index(index);
-    float ped_c_lambda = PED(CXY,lambda);
+bool xSy(float matrix_sigma[size][size], int i, int j){
+    return matrix_sigma[i][j] >= Beta;
+}
 
-    if (ped_c_lambda<dxy){
-        return ped_c_lambda;
-    }
-    else{
-        return dxy;
-    }
-
-}*/
-
-int XYS(int index){
-    
+bool xPry(float matrix_sigma[size][size], int i, int j){
+    return xdominatey(i, j) || (xSy(matrix_sigma, i, j) && !xSy(matrix_sigma, j, i));
 }
 
 void run(int m){
@@ -293,62 +233,143 @@ void run(int m){
     if(k==10){
     initValuesK10();
     }
-    int size = 3;//tamaño de la solucion
-    float sigmaArray[size][size];
-    //int xSy[size][size];
-    INTERVAL CXY[size][size];
+
+    float sigma[size][size];
+    INTERVAL C_XY[size][size];
+    float d_XY[size][size];
 
     for (int i = 0; i < size; i++)
     {  
-        COALITION sumW;
-        //printf("entre ciclo i:%d\n:",i); 
+        COALITION sumW; 
         for (int j = 0; j < size; j++)
         {
-            float wk_lowerC = 0, wk_upperC=0, wk_lowerD = 0, wk_upperD = 0;
-            //printf("entre ciclo j:%d\n:",j); 
+            float wk_lowerC = 0, wk_upperC=0, wk_lowerD = 0, wk_upperD = 0, dxy=-999999;
             if(i != j){
+
                 for (int z = 0; z < k; z++)
                 {
-                    //printf("entre ciclo z%d\n:",z); 
                     sumW = concordance_index(i,j,z);
-                    wk_lowerC += sumW.lowerC; 
-                    wk_upperC += sumW.upperC; 
-                    wk_lowerD += sumW.lowerD; 
+                    wk_lowerC += sumW.lowerC;
+                    wk_upperC += sumW.upperC;
+                    wk_lowerD += sumW.lowerD;
                     wk_upperD += sumW.upperD;
-                }
-                /*printf("lowerC: %f\n",wk_lowerC);
-                printf("upperC: %f\n",wk_upperC);
-                printf("lowerD: %f\n",wk_lowerD);
-                printf("upperD: %f\n",wk_upperD);*/
-                if((wk_lowerC + wk_upperD) >= 1){
-                    CXY[i][j].lower=wk_lowerC;
-                }else{
-                    CXY[i][j].lower=(1-wk_upperD);
+
+                    if(sumW.dxy > dxy){
+                        dxy = sumW.dxy;
+                    }
+
                 }
 
+                if((wk_lowerC + wk_upperD) >= 1){
+                    C_XY[i][j].lower=wk_lowerC;
+                }else{
+                    C_XY[i][j].lower=(1-wk_upperD);
+                }
                 if ((wk_upperC + wk_lowerD)<=1)
                 {
-                    CXY[i][j].upper = wk_upperC;
+                    C_XY[i][j].upper = wk_upperC;
                 }else{
-                    CXY[i][j].upper = (1-wk_lowerD);
+                    C_XY[i][j].upper = (1-wk_lowerD);
                 }
+
+                d_XY[i][j] = 1-dxy;
+
+                if(PED(C_XY[i][j],lambda)<d_XY[i][j]){
+                    sigma[i][j]=PED(C_XY[i][j],lambda);
+                }else{
+                    sigma[i][j]=d_XY[i][j];
+                }
+            }
+        } 
+    }//matriz analogica de concordancia, discordancia y sigma
+
+    int xSy_matrix[size][size];
+    int xPry_matrix[size][size];
+
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {
+            if(i != j){
+
+                xSy_matrix[i][j] = xSy(sigma,i,j);
+                xPry_matrix[i][j] = xPry(sigma,i,j);
             }
             
         }
         
     }
+
+    printf("\nIndice de concordancia\n");
     for (int i = 0; i < size; i++)
     {
         for (int j = 0; j < size; j++)
         {   if (i != j)
             {
-                printf("%f,%f\t",CXY[i][j].lower,CXY[i][j].upper);
+                printf("%f,%f\t",C_XY[i][j].lower,C_XY[i][j].upper);
             }else{
                 printf("null\t");
             }
             
         }
         printf("\n");  
-    } 
-    
+    }
+
+    printf("\nIndice de  discordancia\n");
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {   if (i != j)
+            { 
+                printf("%f\t",d_XY[i][j]);
+            }else{
+                printf("null\t");
+            }
+            
+        }
+        printf("\n");  
+    }
+
+    printf("\nMatrix sigma\n");
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {   if (i != j)
+            { 
+                printf("%f\t",sigma[i][j]);
+            }else{
+                printf("null\t");
+            }
+        }
+        printf("\n");  
+    }
+
+    printf("\nMatrix xSy\n");
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {   if (i != j)
+            { 
+                printf("%d\t",xSy_matrix[i][j]);
+            }else{
+                printf("null\t");
+            }
+        }
+        printf("\n");  
+    }
+
+    printf("\nMatrix xPry\n");
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {   if (i != j)
+            { 
+                printf("%d\t",xPry_matrix[i][j]);
+            }else{
+                printf("null\t");
+            }
+        }
+        printf("\n");  
+    }
+
 }
