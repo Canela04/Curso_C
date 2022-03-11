@@ -7,7 +7,7 @@
 
 float Beta = 0.63;
 int k;
-int size = 3;
+int size;
 
 void initValuesK2(){
     fkx[0][0]=12;
@@ -103,23 +103,6 @@ float discordance_index(int i, int j, int z){
     return d_index;
 }
 
-/*float outranking(){
-    printf("\nC_index [%f,%f]\n", C_index.lower,C_index.upper);
-    printf("Lambda [%f,%f]\n", lambda.lower,lambda.upper);
-
-    float cxy_lambda = PED(C_index,lambda);
-    printf("PED: Cxy y Lambda: %f\n\n", cxy_lambda);
-
-    if(cxy_lambda < d_index)
-    {
-        return cxy_lambda;
-    }
-    else{
-        return d_index;
-    }
-
-}*/
-
 void read_values(char const *arch){
     
     FILE *in = fopen(arch, "r");
@@ -174,23 +157,6 @@ void read_values(char const *arch){
     }
     fclose(in);
     
-    /*printf("Lambda inferior: %f\nLambda Superior: %f\n",lambda.lower,lambda.upper);
-
-    printf("VectorW\n");
-    for (int i = 0; i < k; i++)
-    {
-        printf("Intervalo %d\t[ %f, %f]\n",i+1,VectorW[i].lower,VectorW[i].upper);
-    }
-    printf("VectorQ\n");
-    for (int i = 0; i < k; i++)
-    {
-        printf("Intervalo %d\t[ %f, %f]\n",i+1,vectorQ[i].lower,vectorQ[i].upper);
-    }
-    printf("VectorV\n");
-    for (int i = 0; i < k; i++)
-    {
-        printf("Intervalo %d\t[ %f, %f]\n",i+1,vectorV[i].lower,vectorV[i].upper);
-    }*/
 }
 
 
@@ -223,6 +189,7 @@ bool xPry(float matrix_sigma[size][size], int i, int j){
 }
 
 void run(int m){
+    size = 3;
     k=m;
     if(k==2){
     initValuesK2();
@@ -237,10 +204,11 @@ void run(int m){
     float sigma[size][size];
     INTERVAL C_XY[size][size];
     float d_XY[size][size];
+    COALITION sumW;
 
     for (int i = 0; i < size; i++)
     {  
-        COALITION sumW; 
+         
         for (int j = 0; j < size; j++)
         {
             float wk_lowerC = 0, wk_upperC=0, wk_lowerD = 0, wk_upperD = 0, dxy=-999999;

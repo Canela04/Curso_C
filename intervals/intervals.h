@@ -18,9 +18,6 @@ typedef struct COALITION{
 INTERVAL VectorW[100], vectorQ[100], vectorV[100], lambda;
 float fkx[10][10];
 
-
-
-
 void run(int);
 void initValuesK2();
 void initValuesK5();
@@ -36,7 +33,8 @@ float discordance_index();
 void read_values(char const *);
 
 float outranking();
-int XSY();
+bool xSy(float (*matrix_sigma)[*], int, int);
+bool xPry(float (*matrix_sigma) [*], int, int);
 bool xdominatey();
 
 #endif
