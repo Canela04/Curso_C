@@ -2,6 +2,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<time.h>
+#include<math.h>
 
 typedef struct INTERVAL {
     float lower;
@@ -19,6 +20,24 @@ float generateRandomValue(float a, float b) {
     return a + r;
 }
 
+float max(float a, float b){
+	float result;
+	   if (a > b)
+	      result = a;
+	   else
+	      result = b;
+	   return result;
+}
+
+float min(float a, float b){
+	float result;
+	   if (a < b)
+	      result = a;
+	   else
+	      result = b;
+	   return result;
+}
+
 int main(int argc, char const *argv[])
 {
     float low;
@@ -26,9 +45,10 @@ int main(int argc, char const *argv[])
     float x;
     int k , intentos = 0, goOn=1;//cantidad de numeros
     k = 6;
-    float tmp, auxLow, auxUp, sumLow, sumUp;
-
-	//printf("Suma: %f\n",sum);
+	float base[k], wp[k];
+    float tmp, auxLow, auxUp, sumLow=0, sumUp=0, epsilon;
+	
+	epsilon = 0.03;
 	int i, j;
 
 	FILE *archivo;
@@ -37,41 +57,65 @@ int main(int argc, char const *argv[])
 	archivo = fopen(str, "r");
 	float tempweight = 0;
     //RANDOM SEED
-	if(archivo == NULL){
+	//if(archivo == NULL){
 		printf("The file %s couldn't be found... creating..\n", str);
 		archivo = fopen(str, "w");
 		//LAMBDA
-        low = generateRandomValue(0.5, 1);
-        lambda.upper = generateRandomValue(low, 1);
-        lambda.lower = low;
-		fprintf(archivo, "%f %f\n", lambda.lower,lambda.upper);
+		lambda.lower = generateRandomValue(0.5, 0.65);
+        lambda.upper = lambda.lower + 0.05;
+        
+		fprintf(archivo, "%.2f %.2f\n", lambda.lower,lambda.upper);
 
 		//BETA
-		beta = generateRandomValue(0.5, 1);
-		fprintf(archivo, "%f\n", beta);
+		beta = 0.5;
+		fprintf(archivo, "%.2f\n", beta);
 
 		//VECTOR DE PESOS
 		while(goOn){
     		auxLow = 0;
 			auxUp = 0;
-    		for (int i = 0; i < k; i++)
-    		{
-    		    iVectorW[i].lower = generateRandomValue(0,1)/(1+i);
-				iVectorW[i].upper = generateRandomValue(iVectorW[i].lower, (iVectorW[i].lower + 1));
-    		    auxLow += iVectorW[i].lower;
+			for ( i = 0; i < k; i++)
+			{
+				base[i] = generateRandomValue(0,1);
+				//printf("base[%d]= %.2f\n", i+1, base[i]);
+			}// 1
+			for ( i = 0; i < k; i++)
+			{
+				if (i==0)
+				{
+					wp[i] = base[i];
+				}else{
+					wp[i] = base[i] - base[i-1];
+					if (wp[i]<0)
+					{
+						wp[i]=base[i];
+					}	
+				}
+				//printf("wp[%d]= %.2f\n", i+1, wp[i]);
+			}// 2
+			for ( i = 0; i < k; i++)
+			{
+				iVectorW[i].lower = max(0, wp[i] - epsilon);
+				iVectorW[i].upper = min(1, wp[i] + epsilon);
+				auxLow += iVectorW[i].lower;
 				auxUp += iVectorW[i].upper;
-    		}
-    		sumLow= auxLow;
+
+			}// 3 y 4
+			sumLow = auxLow;
 			sumUp = auxUp;
     		if(sumLow<=1 && sumUp >= 1){
+				intentos++;
     		    goOn = 0;
     		}else{
+				intentos++;
     		    goOn = 1;
     		}
-			
+			//printf("SumLow = %.2f\n",sumLow);
+			//printf("SumUp = %.2f\n",sumUp);	
 		}
+		printf("Intentos: %d\n",intentos);	
 		for(i = 0;i < k; i++){
-			fprintf(archivo, "%f %f", iVectorW[i].lower, iVectorW[i].upper);
+			fprintf(archivo, "%.2f %.2f", iVectorW[i].lower, iVectorW[i].upper);
 			if(i == (k-1)){
 				fprintf(archivo, "\n");
 			}else{
@@ -79,13 +123,13 @@ int main(int argc, char const *argv[])
 			}
 		}
 		//fclose(archivo);
-		printf("Inferiores: %f\nSuperiores: %f\n",sumLow,sumUp);
+		//printf("Inferiores: %f\nSuperiores: %f\n",sumLow,sumUp);
 
 		//VECTOR INDIFERENCIA
 		for(i = 0;i < k; i++){
-			iVectorQ[i].lower = generateRandomValue(0, 10);
-			iVectorQ[i].upper = generateRandomValue(iVectorQ[i].lower, 15);
-			fprintf(archivo, "%f %f", iVectorQ[i].lower, iVectorQ[i].upper);
+			iVectorQ[i].lower = generateRandomValue(0.01, 0.04);
+			iVectorQ[i].upper = generateRandomValue(iVectorQ[i].lower + 0.01, 0.06);
+			fprintf(archivo, "%.2f %.2f", iVectorQ[i].lower, iVectorQ[i].upper);
 			if(i == (k-1)){
 				fprintf(archivo, "\n");
 			}else{
@@ -95,9 +139,9 @@ int main(int argc, char const *argv[])
 
 		//VECTOR DE VETO
 		for(i = 0;i < k; i++){
-			iVectorV[i].lower = generateRandomValue(iVectorQ[i].lower, (iVectorQ[i].lower + 3));
-			iVectorV[i].upper = generateRandomValue(iVectorQ[i].upper, (iVectorQ[i].upper + 3));
-			fprintf(archivo, "%f %f", iVectorV[i].lower, iVectorV[i].upper);
+			iVectorV[i].lower = generateRandomValue(iVectorQ[i].upper  * 3, (iVectorQ[i].upper * 4));
+			iVectorV[i].upper = generateRandomValue(iVectorV[i].lower, (iVectorV[i].lower * 2));
+			fprintf(archivo, "%.2f %.2f", iVectorV[i].lower, iVectorV[i].upper);
 			if(i == (k-1)){
 				fprintf(archivo, "\n");
 			}else{
@@ -106,44 +150,50 @@ int main(int argc, char const *argv[])
 		}
 
 		fclose(archivo);
-		archivo = fopen(str, "r");
-	}
-
-	/*char line[5000];
-	int contlimiter = 0;
-	while( fgets(line,2000,archivo) ) {
-		int init_size = strlen(line);
-		char delim[] = " ";
-		char *ptr = strtok(line, delim);
-		int cont_in = 0;
-		while(ptr != NULL)
-		{
-			if(contlimiter == 0){
-				Epsilon = atof(ptr);
-			}
-			if(contlimiter == 1){
-				Beta = atof(ptr);
-			}
-			if(contlimiter == 2){
-				Lamdba = atof(ptr);
-			}
-			if(contlimiter == 3){
-				vectorW[cont_in] = atof(ptr);
-			}
-			if(contlimiter == 4){
-				vectorV[cont_in] = atof(ptr);
-			}
-			if(contlimiter == 5){
-				vectorU[cont_in] = atof(ptr);
-			}
-			if(contlimiter == 6){
-				vectorS[cont_in] = atof(ptr);
-			}
-			ptr = strtok(NULL, delim);
-			cont_in++;
-		}
-		contlimiter++;
+	/*}else{
+		char buffer[5000];
+    	int linea = 0;
+    	while (fgets(buffer,2000,archivo))
+    	{
+    	    char delim[] = " ,";
+    	    char *ptr = strtok(buffer, delim);
+    	    int cont_in=0;
+    	    while (ptr != NULL)
+    	    {
+				if(linea == 0){
+    	            lambda.lower = atof(ptr);
+    	            ptr = strtok(NULL, delim);
+    	            lambda.upper = atof(ptr);
+    	        }//lambda
+    	        if(linea == 1){
+    	            beta = atof(ptr);
+    	        }//beta
+    	        if (linea == 2)
+    	        {
+    	            iVectorW[cont_in].lower= atof(ptr); 
+    	            ptr = strtok(NULL, delim);
+    	            iVectorW[cont_in].upper= atof(ptr);
+    	        }//weight
+    	        if (linea == 3)
+    	        {
+    	            iVectorQ[cont_in].lower= atof(ptr); 
+    	            ptr = strtok(NULL, delim);
+    	            iVectorQ[cont_in].upper= atof(ptr);
+    	        }//indifference
+    	        if (linea == 4)
+    	        {
+    	            iVectorV[cont_in].lower= atof(ptr); 
+    	            ptr = strtok(NULL, delim);
+    	            iVectorV[cont_in].upper= atof(ptr);
+    	        }//veto
+    	        ptr = strtok(NULL, delim);
+    	        cont_in++;
+    	    }
+    	    linea++;
+    	}
+    	fclose(archivo);
 	}*/
+
     return 0;
 }
 
