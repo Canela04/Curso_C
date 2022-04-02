@@ -38,13 +38,26 @@ float min(float a, float b){
 	   return result;
 }
 
+int compare_float(const void *p, const void *q){
+	float a, b;
+	a = *(float *) p;
+	b = *(float *) q;
+	if(a<b){
+		return -1;
+	}
+	if (a==b){
+		return 0;
+	}
+	return 1;
+}
+
 int main(int argc, char const *argv[])
 {
     float low;
     srand(time(NULL));
     float x;
     int k , intentos = 0, goOn=1;//cantidad de numeros
-    k = 6;
+    k = 3;
 	float base[k], wp[k];
     float tmp, auxLow, auxUp, sumLow=0, sumUp=0, epsilon;
 	
@@ -71,25 +84,33 @@ int main(int argc, char const *argv[])
 		fprintf(archivo, "%.2f\n", beta);
 
 		//VECTOR DE PESOS
-		while(goOn){
-    		auxLow = 0;
-			auxUp = 0;
+		/*while(goOn){
+			auxLow = 0;
+			auxUp = 0;*/
 			for ( i = 0; i < k; i++)
 			{
 				base[i] = generateRandomValue(0,1);
 				//printf("base[%d]= %.2f\n", i+1, base[i]);
+				
 			}// 1
+			qsort(base, k, sizeof(float), &compare_float);
+			//printf("Ordenado\n");
+/*			for ( i = 0; i < k; i++)
+			{
+				printf("base[%d]= %.2f\n", i+1, base[i]);
+			}// 1.5
+*/
+			//correccion: generar n-1, numeros aleatorios
 			for ( i = 0; i < k; i++)
 			{
 				if (i==0)
 				{
 					wp[i] = base[i];
+				}
+				if (i==(k-1)){
+					wp[i] = 1 - base[i-1];	
 				}else{
 					wp[i] = base[i] - base[i-1];
-					if (wp[i]<0)
-					{
-						wp[i]=base[i];
-					}	
 				}
 				//printf("wp[%d]= %.2f\n", i+1, wp[i]);
 			}// 2
@@ -99,21 +120,23 @@ int main(int argc, char const *argv[])
 				iVectorW[i].upper = min(1, wp[i] + epsilon);
 				auxLow += iVectorW[i].lower;
 				auxUp += iVectorW[i].upper;
-
+				//printf("Intervalo[%d]:%.2f %.2f\n", i+1,iVectorW[i].lower, iVectorW[i].upper);
 			}// 3 y 4
-			sumLow = auxLow;
+			/*sumLow = auxLow;
 			sumUp = auxUp;
-    		if(sumLow<=1 && sumUp >= 1){
+			if(sumLow<=1 && sumUp >= 1){
 				intentos++;
     		    goOn = 0;
     		}else{
 				intentos++;
     		    goOn = 1;
     		}
-			//printf("SumLow = %.2f\n",sumLow);
-			//printf("SumUp = %.2f\n",sumUp);	
+
 		}
-		printf("Intentos: %d\n",intentos);	
+		printf("Intentos: %d\n",intentos);*/
+
+
+
 		for(i = 0;i < k; i++){
 			fprintf(archivo, "%.2f %.2f", iVectorW[i].lower, iVectorW[i].upper);
 			if(i == (k-1)){
@@ -123,7 +146,7 @@ int main(int argc, char const *argv[])
 			}
 		}
 		//fclose(archivo);
-		//printf("Inferiores: %f\nSuperiores: %f\n",sumLow,sumUp);
+		printf("\nInferiores: %f\nSuperiores: %f\n",auxLow,auxUp);
 
 		//VECTOR INDIFERENCIA
 		for(i = 0;i < k; i++){
