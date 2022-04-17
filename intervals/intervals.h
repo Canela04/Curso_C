@@ -16,7 +16,7 @@ typedef struct COALITION{
 }COALITION;
 
 INTERVAL VectorW[100], vectorQ[100], vectorV[100], lambda;
-float fkx[10][10];
+float fkx[3][30];
 
 void run(int);
 void initValuesK2();

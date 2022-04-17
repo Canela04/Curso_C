@@ -3,23 +3,70 @@
 #include<string.h>
 
 int main(int argc, char const *argv[])
-{   float fkx[2][3];
-    fkx[0][0]=12;
-    fkx[0][1]=23;
-    fkx[0][2]=32;
-    fkx[1][0]=40;
-    fkx[1][1]=32;
-    fkx[1][2]=32;
+{   
+    int row1 = 10, col1 = 3;
+    int row2 = 3, col2 = 10;
+    int fkx[row1][col1];
+    int fky[row2][col2];
+    int x = 0;
     
-    for (int i = 0; i < 2; i++)
+
+    
+    
+    for (int i = 0; i < row1; i++)
     {
-        for (int j = 0; j < 3; j++)
+        for (int j = 0; j < col1; j++)
         {
-            printf("%f\t",fkx[i][j]);
+            fkx[i][j] = x++;
+            printf("%d\t",fkx[i][j]);
         }
         printf("\n");
         
     }
+    printf("\n\n");
+    int suma1 = 0, suma2 = 0, i,j;
+    for (i = 0; i < row1; i++)
+    {
+        for (j = 0; j < col1; j++)
+        {
+            
+            /*if (j==0){
+                printf("%d\t",fkx[i][j]);
+                fky[j][i] = fkx[i][j];
+                suma1 += fkx[i][j];
+            }
+            if (j==1)
+            {
+                printf("%d\t",fkx[i][j]);
+                fky[j][i] = fkx[i][j];
+                suma2 +=fkx[i][j];
+            }
+            if (j==2)
+            {
+                printf("%d\t",fkx[i][j]);
+                fky[j][i] = fkx[i][j];
+            }
+            */
+           fky[j][i] = fkx[i][j];
+            
+        }
+        
+        printf("\n");
+        
+    }
+
+    printf("\n\n");
+    for (int i = 0; i < row2; i++)
+    {
+        for (int j = 0; j <col2; j++)
+        {
+            //fky[i][j] = x++;
+            printf("%d\t",fky[i][j]);
+        }
+        printf("\n");
+        
+    }
+    //printf("suma1: %d\nsuma2: %d\n",suma1,suma2);
     
     return 0;
 }
