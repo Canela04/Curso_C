@@ -6,8 +6,8 @@
 
 int main(int argc, char const *argv[])
 {  
-    int b = atoi(argv[2]);
-    read_values(argv[1]);
+    int b = atoi(argv[3]);
+    read_values(argv[1], argv[2]);
     run(b);
     
     return 0;

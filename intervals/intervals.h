@@ -16,7 +16,7 @@ typedef struct COALITION{
 }COALITION;
 
 INTERVAL VectorW[100], vectorQ[100], vectorV[100], lambda;
-float fkx[3][30];
+float fky[30][3], fkx[3][30], beta;
 
 void run(int);
 void initValuesK2();
@@ -30,11 +30,13 @@ float PED2(float  intA, INTERVAL intB);
 float coalitions(INTERVAL, float);
 COALITION concordance_index(int, int, int);
 float discordance_index();
-void read_values(char const *);
+void read_values(char const *, char const *);
 
 float outranking();
-bool xSy(float (*matrix_sigma)[*], int, int);
-bool xPry(float (*matrix_sigma) [*], int, int);
+int xSy(float (*matrix_sigma)[*], int, int);
+int xPry(float (*matrix_sigma) [*], int, int);
 bool xdominatey();
+float chebyshev(float, float);
+float euclidiana(float, float);
 
 #endif

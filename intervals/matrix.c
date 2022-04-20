@@ -20,8 +20,7 @@ int main(int argc, char const *argv[])
             fkx[i][j] = x++;
             printf("%d\t",fkx[i][j]);
         }
-        printf("\n");
-        
+        printf("\n"); 
     }
     printf("\n\n");
     int suma1 = 0, suma2 = 0, i,j;

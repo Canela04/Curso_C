@@ -5,39 +5,9 @@
 #include"intervals.h"
 #include<stdbool.h>
 
-float Beta = 0.63;
+float Beta;
 int k;
 int size;
-
-void initValuesK2(){
-    fkx[0][0]=12;
-    fkx[0][1]=23;
-    fkx[0][2]=32;
-    fkx[1][0]=42;
-    fkx[1][1]=32;
-    fkx[1][2]=30;
-}
-
-void initValuesK5(){
-   /* fk1x[0]= 20;
-    fk1x[1]= 25;
-    fk1x[2]= 13.90;
-    fk1x[3]= 30;
-    fk1x[4]= 20;*/
-}
-
-void initValuesK10(){
-    /*fk1x[0]=20;
-    fk1x[1]=25;
-    fk1x[2]=8.80;
-    fk1x[3]=8;
-    fk1x[4]=23.12;
-    fk1x[5]=8;
-    fk1x[6]=5.30;
-    fk1x[7]=23;
-    fk1x[8]=20;
-    fk1x[9]=9;*/
-}
 
 float PED(INTERVAL  intA, INTERVAL intB){
     float ped;
@@ -103,62 +73,106 @@ float discordance_index(int i, int j, int z){
     return d_index;
 }
 
-void read_values(char const *arch){
+void read_values(char const *arch, char const *arch2){
     
     FILE *in = fopen(arch, "r");
     if(in==NULL){
-        perror("Error en la apertura del archivo\n");
+        perror("Error en la apertura del archivo de DM\n");
         exit(1);
     }
-
-    char caracter;
-    int nl = 0;
-    int cm = 0, bl = 0;
-    char c;
  
     char buffer[5000];
     int linea = 0;
 
     while (fgets(buffer,2000,in))
     {
-        char delim[] = " ,";
-        char *ptr = strtok(buffer, delim);
-        int cont_in=0;
-        while (ptr != NULL)
-        {
-            if(linea == 0){
-                lambda.lower = atof(ptr);
-                ptr = strtok(NULL, delim);
-                lambda.upper = atof(ptr);
-            }
-            if (linea == 1)
-            {
-                VectorW[cont_in].lower= atof(ptr); 
-                ptr = strtok(NULL, delim);
-                VectorW[cont_in].upper= atof(ptr);
-            }
-            if (linea == 2)
-            {
-                vectorQ[cont_in].lower= atof(ptr); 
-                ptr = strtok(NULL, delim);
-                vectorQ[cont_in].upper= atof(ptr);
-            }
-            if (linea == 3)
-            {
-                vectorV[cont_in].lower= atof(ptr); 
-                ptr = strtok(NULL, delim);
-                vectorV[cont_in].upper= atof(ptr);
-            }
-
-            ptr = strtok(NULL, delim);
-            cont_in++;
-        }
-        linea++;
-    }
+    	    char delim[] = " ,";
+    	    char *ptr = strtok(buffer, delim);
+    	    int cont_in=0;
+    	    while (ptr != NULL)
+    	    {
+				if(linea == 0){
+    	            lambda.lower = atof(ptr);
+    	            ptr = strtok(NULL, delim);
+    	            lambda.upper = atof(ptr);
+    	        }//lambda
+    	        if(linea == 1){
+    	            beta = atof(ptr);
+    	        }//beta
+    	        if (linea == 2)
+    	        {
+    	            VectorW[cont_in].lower= atof(ptr); 
+    	            ptr = strtok(NULL, delim);
+    	            VectorW[cont_in].upper= atof(ptr);
+    	        }//weight
+    	        if (linea == 3)
+    	        {
+    	            vectorQ[cont_in].lower= atof(ptr); 
+    	            ptr = strtok(NULL, delim);
+    	            vectorQ[cont_in].upper= atof(ptr);
+    	        }//indifference
+    	        if (linea == 4)
+    	        {
+    	            vectorV[cont_in].lower= atof(ptr); 
+    	            ptr = strtok(NULL, delim);
+    	            vectorV[cont_in].upper= atof(ptr);
+    	        }//veto
+    	        ptr = strtok(NULL, delim);
+    	        cont_in++;
+    	    }
+    	    linea++;
+    	}
     fclose(in);
+
+    FILE *in2 = fopen(arch2, "r");
+    if(in2==NULL){
+        perror("Error en la apertura del archivo de soluciones\n");
+        exit(2);
+    }
+ 
+    //char buffer[5000];
+    linea = 0;
+    char buffer2[5000];
+
+    while (fgets(buffer2,2000,in2))
+    {
+    	char delim[] = " ";
+    	char *ptr = strtok(buffer2, delim);
+    	int cont_in=0;
+    	while (ptr != NULL)
+    	{
+            fky[linea][cont_in] = atof(ptr);
+            //printf("%f\t%d\t%d\n",atof(ptr),linea,cont_in);
+            ptr = strtok(NULL, delim);
+    	    cont_in++;
+    	}
+    	linea++;
+    }
+    size = linea;
+    //printf("tamanio: %d\n", size);
+    fclose(in2);
+
+    for (int i = 0; i < 30; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            //printf("%f \t", fky[i][j]);
+            fkx[j][i]=fky[i][j]; 
+        }
+        //printf("\n");
+    }
+    //printf("\n\n");
+    /*for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 30; j++)
+        {
+            printf("%f \t", fkx[i][j]);
+            //fky[j][i]=fkx[i][j]; 
+        }
+        printf("\n");
+    }*/
     
 }
-
 
 bool xdominatey(int i, int j){
 	int atleastone = 0;
@@ -180,26 +194,34 @@ bool xdominatey(int i, int j){
 	}
 }
 
-bool xSy(float matrix_sigma[size][size], int i, int j){
-    return matrix_sigma[i][j] >= Beta;
+int xSy(float matrix_sigma[size][size], int i, int j){
+    if(matrix_sigma[i][j] >= beta){
+        return 1;
+    }else{
+        return 0;
+    }
+    //return matrix_sigma[i][j] >= beta;
 }
 
-bool xPry(float matrix_sigma[size][size], int i, int j){
-    return xdominatey(i, j) || (xSy(matrix_sigma, i, j) && !xSy(matrix_sigma, j, i));
+int xPry(float matrix_sigma[size][size], int i, int j){
+    //return xdominatey(i, j) || (xSy(matrix_sigma, i, j) && !xSy(matrix_sigma, j, i));
+    if(xdominatey(i, j) || (xSy(matrix_sigma, i, j) && !xSy(matrix_sigma, j, i))){
+        return 1;
+    }else{
+        return 0;
+    }
+}
+
+float chebyshev(float x1, float x){
+    
+}
+
+float euclidiana(float x1, float x){
+
 }
 
 void run(int m){
-    size = 3;
     k=m;
-    if(k==2){
-    initValuesK2();
-    }
-    if(k==5){
-    initValuesK5();
-    }
-    if(k==10){
-    initValuesK10();
-    }
 
     float sigma[size][size];
     INTERVAL C_XY[size][size];
@@ -207,8 +229,7 @@ void run(int m){
     COALITION sumW;
 
     for (int i = 0; i < size; i++)
-    {  
-         
+    {   
         for (int j = 0; j < size; j++)
         {
             float wk_lowerC = 0, wk_upperC=0, wk_lowerD = 0, wk_upperD = 0, dxy=-999999;
@@ -254,91 +275,161 @@ void run(int m){
     int xSy_matrix[size][size];
     int xPry_matrix[size][size];
 
+    // for (int i = 0; i < size; i++)
+    // {
+    //     for (int j = 0; j < size; j++)
+    //     {
+    //         if(i != j){
+    //             xSy_matrix[i][j] = 0;
+    //             xPry_matrix[i][j] = 0;
+    //         }
+            
+    //     }
+        
+    // }
+    int xSyM[size];
+    int xPryM[size];
+
     for (int i = 0; i < size; i++)
     {
+        xSyM[i]=0;
+        xPryM[i]=0;
         for (int j = 0; j < size; j++)
         {
             if(i != j){
+                // xSy_matrix[i][j] += xSy(sigma,i,j);
+                // xPry_matrix[i][j] += xPry(sigma,j,i);
+                xSyM[i] += xSy(sigma,i,j);
+                xPryM[i] += xPry(sigma,j,i);
 
-                xSy_matrix[i][j] = xSy(sigma,i,j);
-                xPry_matrix[i][j] = xPry(sigma,i,j);
             }
             
         }
         
     }
 
-    printf("\nIndice de concordancia\n");
+    
+    imprimir_datos(C_XY, d_XY, sigma, xSyM, xPryM);
+    printf("Terminador\n");
+    
+
+}
+
+void imprimir_datos(INTERVAL C_XY[size][size], float d_XY[size][size], float sigma[size][size],int xSyM[size], int xPryM[size]){
+    FILE *arch;
+    char str[100];
+    sprintf(str, "resultados.txt");
+    arch = fopen(str, "w");
+    if(arch == NULL){
+		printf("Error! The file %s couldn't be created\n", str);
+		exit(-1);
+	}
+    int i, j;
+
+    fprintf(arch, "\nIndice de concordancia\n");
     for (int i = 0; i < size; i++)
     {
         for (int j = 0; j < size; j++)
         {   if (i != j)
             {
-                printf("%f,%f\t",C_XY[i][j].lower,C_XY[i][j].upper);
+                fprintf(arch, "%f,%f\t",C_XY[i][j].lower,C_XY[i][j].upper);
             }else{
-                printf("null\t");
+                fprintf(arch,"null\t");
             }
             
         }
-        printf("\n");  
+        fprintf(arch,"\n");  
     }
 
-    printf("\nIndice de  discordancia\n");
+    fprintf(arch, "\nIndice de  discordancia\n");
     for (int i = 0; i < size; i++)
     {
         for (int j = 0; j < size; j++)
         {   if (i != j)
             { 
-                printf("%f\t",d_XY[i][j]);
+                fprintf(arch, "%f\t",d_XY[i][j]);
             }else{
-                printf("null\t");
+                fprintf(arch, "null\t");
             }
             
         }
-        printf("\n");  
+        fprintf(arch, "\n");  
     }
 
-    printf("\nMatrix sigma\n");
+    fprintf(arch, "\nMatrix sigma\n");
     for (int i = 0; i < size; i++)
     {
         for (int j = 0; j < size; j++)
         {   if (i != j)
             { 
-                printf("%f\t",sigma[i][j]);
+                fprintf(arch, "%f\t",sigma[i][j]);
             }else{
-                printf("null\t");
+                fprintf(arch, "null\t");
             }
         }
-        printf("\n");  
+        fprintf(arch, "\n");  
     }
 
-    printf("\nMatrix xSy\n");
+    // fprintf(arch, "\nMatrix xSy\n");
+    // for (int i = 0; i < size; i++)
+    // {
+    //     for (int j = 0; j < size; j++)
+    //     {   if (i != j)
+    //         { 
+    //             fprintf(arch, "%d\t", xSy_matrix[i][j]);
+    //         }else{
+    //             fprintf(arch, "null\t");
+    //         }
+    //     }
+    //     fprintf(arch, "\n");  
+    // }
+
+    // fprintf(arch, "\nMatrix xPry\n");
+    // for (int i = 0; i < size; i++)
+    // {
+    //     for (int j = 0; j < size; j++)
+    //     {   if (i != j)
+    //         { 
+    //             fprintf(arch, "%d\t",xPry_matrix[i][j]);
+    //         }else{
+    //             fprintf(arch, "null\t");
+    //         }
+    //     }
+    //     fprintf(arch, "\n");  
+    // }
+
+    // for (int i = 0; i < size; i++)
+    // {
+    //     for (int j = 0; j < size; j++)
+    //     {
+    //         for (int z = 0; z < k; z++)
+    //         {
+    //             if(xSy_matrix[i][j]==0 && xPry_matrix[i][j]==1){
+    //                 fprintf(arch, "K%d: %f\n",z,fkx[z][i]);
+    //             }
+    //         }
+            
+    //     }
+        
+    // }
+
+    fprintf(arch, "\nValores xSy\n");
     for (int i = 0; i < size; i++)
     {
-        for (int j = 0; j < size; j++)
-        {   if (i != j)
-            { 
-                printf("%d\t",xSy_matrix[i][j]);
-            }else{
-                printf("null\t");
-            }
-        }
-        printf("\n");  
+        
+        fprintf(arch, "%d\n", xSyM[i]); 
     }
 
-    printf("\nMatrix xPry\n");
+    fprintf(arch, "\nValores xPry\n");
     for (int i = 0; i < size; i++)
     {
-        for (int j = 0; j < size; j++)
-        {   if (i != j)
-            { 
-                printf("%d\t",xPry_matrix[i][j]);
-            }else{
-                printf("null\t");
-            }
-        }
-        printf("\n");  
+        
+        fprintf(arch, "%d\n", xPryM[i]); 
     }
     
+    for (int i = 0; i < size; i++)
+    {
+        fprintf(arch, "Indice: %d\n",i+1);
+    }
 
 }
