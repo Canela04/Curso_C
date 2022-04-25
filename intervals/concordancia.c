@@ -6,9 +6,11 @@
 
 int main(int argc, char const *argv[])
 {  
-    int b = atoi(argv[3]);
+    //int b = atoi(argv[3]);
+    int dm = 10;
+    int DTLZs = 9;
     read_values(argv[1], argv[2]);
-    run(b);
+    run();
     
     return 0;
 }

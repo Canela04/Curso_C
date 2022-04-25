@@ -4,10 +4,7 @@
 #include<time.h>
 #include"intervals.h"
 #include<stdbool.h>
-
-float Beta;
-int k;
-int size;
+#include<math.h>
 
 float PED(INTERVAL  intA, INTERVAL intB){
     float ped;
@@ -74,8 +71,10 @@ float discordance_index(int i, int j, int z){
 }
 
 void read_values(char const *arch, char const *arch2){
-    
-    FILE *in = fopen(arch, "r");
+    int objectives = 0;
+    char str[100];
+	sprintf(str, "DMs/%s", arch);
+    FILE *in = fopen(str, "r");
     if(in==NULL){
         perror("Error en la apertura del archivo de DM\n");
         exit(1);
@@ -104,6 +103,7 @@ void read_values(char const *arch, char const *arch2){
     	            VectorW[cont_in].lower= atof(ptr); 
     	            ptr = strtok(NULL, delim);
     	            VectorW[cont_in].upper= atof(ptr);
+                    objectives++;
     	        }//weight
     	        if (linea == 3)
     	        {
@@ -123,8 +123,11 @@ void read_values(char const *arch, char const *arch2){
     	    linea++;
     	}
     fclose(in);
-
-    FILE *in2 = fopen(arch2, "r");
+    k=objectives;
+    printf("k=%d\n", objectives);
+    char str2[100];
+	sprintf(str2, "Soluciones/%s", arch2);
+    FILE *in2 = fopen(str2, "r");
     if(in2==NULL){
         perror("Error en la apertura del archivo de soluciones\n");
         exit(2);
@@ -212,17 +215,72 @@ int xPry(float matrix_sigma[size][size], int i, int j){
     }
 }
 
-float chebyshev(float x1, float x){
-    
+float chebyshev(float xi, float x){
+    // float d;
+    // printf("%f - %f = %f\n", xi, x, xi-x);
+    // d = xi-x;
+    // printf("%f\n",fabs(xi-x));
+
+    return fabs(xi-x);
 }
 
-float euclidiana(float x1, float x){
+int compare(const void *p1, const void *p2){
+	// float a, b;
+	// a = *(float *) p;
+	// b = *(float *) q;
+    // //menor a mayor
+	// if(a<b){
+	// 	return -1;
+	// }
+	// if (a==b){
+	// 	return 0;
+	// }
+	// return 1;
 
+    SOLUTION *a, *b;
+	double anorm, bnorm;
+	a = (SOLUTION *)p1;
+	b = (SOLUTION *)p2;
+
+	//programar:
+	/*
+		Si A tiene un valor menor que B en strictOR: implia que A es mejor
+			Como A es mejor: se devuelve numero positivo
+		Si B tiene un valor menor que A en strictOR: implia que B es mejor
+			Devolver numero negativo
+		Si A.strictOR = B.strictOR
+			Si A tiene un valor mas grande que B en weakOR Entonces A es mejor
+				Como A es mejor devuelve un positivo
+			Si B tiene un valor mas grande que A en weakOR Entonces B es mejor
+				Devuelve negativo
+			
+	*/
+	if(a->_xPry < b->_xPry){
+		return -1;
+	}
+	
+	if(a->_xPry > b->_xPry){
+		return 1;
+	}
+	if (a->_xPry == b->_xPry)
+	{
+		if(a->_xSy > b->_xSy) {
+			return -1;
+		}else if (a->_xSy < b->_xSy){
+			return 1;
+		}
+		
+	}
+	return 0;
 }
 
-void run(int m){
-    k=m;
+float euclidiana(float xi, float x){
+    float d;
+    d=sqrt(pow((x-xi),2));
+    return d;
+}
 
+void run(){
     float sigma[size][size];
     INTERVAL C_XY[size][size];
     float d_XY[size][size];
@@ -287,35 +345,43 @@ void run(int m){
     //     }
         
     // }
+    // int xSyM[k][size];
+    // int xPryM[k][size];
+
     int xSyM[size];
     int xPryM[size];
-
-    for (int i = 0; i < size; i++)
-    {
-        xSyM[i]=0;
-        xPryM[i]=0;
-        for (int j = 0; j < size; j++)
+    SOLUTION _x[size]; 
+    
+        for (int i = 0; i < size; i++)
         {
-            if(i != j){
-                // xSy_matrix[i][j] += xSy(sigma,i,j);
-                // xPry_matrix[i][j] += xPry(sigma,j,i);
-                xSyM[i] += xSy(sigma,i,j);
-                xPryM[i] += xPry(sigma,j,i);
+            _x[i].index = i;
+            _x[i]._xSy = 0;
+            _x[i]._xPry = 0;
+            for (int j = 0; j < size; j++)
+            {
+                if(i != j){
+                    // xSy_matrix[i][j] += xSy(sigma,i,j);
+                    // xPry_matrix[i][j] += xPry(sigma,j,i);
+
+                    /*xSyM[k][i] += xSy(sigma,i,j);
+                    xPryM[k][i] += xPry(sigma,j,i);*/
+
+                    _x[i]._xSy += xSy(sigma,i,j);
+                    _x[i]._xPry += xPry(sigma,j,i);
+
+                }
 
             }
-            
-        }
-        
-    }
 
-    
-    imprimir_datos(C_XY, d_XY, sigma, xSyM, xPryM);
-    printf("Terminador\n");
+        }
+    qsort(_x, size, sizeof(SOLUTION), (int (*)(const void *, const void *))&compare); 
+    imprimir_datos(C_XY, d_XY, sigma, _x);
+    printf("Terminado!\n");
     
 
 }
 
-void imprimir_datos(INTERVAL C_XY[size][size], float d_XY[size][size], float sigma[size][size],int xSyM[size], int xPryM[size]){
+void imprimir_datos(INTERVAL C_XY[size][size], float d_XY[size][size], float sigma[size][size], SOLUTION _x[size]){
     FILE *arch;
     char str[100];
     sprintf(str, "resultados.txt");
@@ -326,49 +392,49 @@ void imprimir_datos(INTERVAL C_XY[size][size], float d_XY[size][size], float sig
 	}
     int i, j;
 
-    fprintf(arch, "\nIndice de concordancia\n");
-    for (int i = 0; i < size; i++)
-    {
-        for (int j = 0; j < size; j++)
-        {   if (i != j)
-            {
-                fprintf(arch, "%f,%f\t",C_XY[i][j].lower,C_XY[i][j].upper);
-            }else{
-                fprintf(arch,"null\t");
-            }
+    // fprintf(arch, "\nIndice de concordancia\n");
+    // for (int i = 0; i < size; i++)
+    // {
+    //     for (int j = 0; j < size; j++)
+    //     {   if (i != j)
+    //         {
+    //             fprintf(arch, "%f,%f\t",C_XY[i][j].lower,C_XY[i][j].upper);
+    //         }else{
+    //             fprintf(arch,"null\t");
+    //         }
             
-        }
-        fprintf(arch,"\n");  
-    }
+    //     }
+    //     fprintf(arch,"\n");  
+    // }
 
-    fprintf(arch, "\nIndice de  discordancia\n");
-    for (int i = 0; i < size; i++)
-    {
-        for (int j = 0; j < size; j++)
-        {   if (i != j)
-            { 
-                fprintf(arch, "%f\t",d_XY[i][j]);
-            }else{
-                fprintf(arch, "null\t");
-            }
+    // fprintf(arch, "\nIndice de  discordancia\n");
+    // for (int i = 0; i < size; i++)
+    // {
+    //     for (int j = 0; j < size; j++)
+    //     {   if (i != j)
+    //         { 
+    //             fprintf(arch, "%f\t",d_XY[i][j]);
+    //         }else{
+    //             fprintf(arch, "null\t");
+    //         }
             
-        }
-        fprintf(arch, "\n");  
-    }
+    //     }
+    //     fprintf(arch, "\n");  
+    // }
 
-    fprintf(arch, "\nMatrix sigma\n");
-    for (int i = 0; i < size; i++)
-    {
-        for (int j = 0; j < size; j++)
-        {   if (i != j)
-            { 
-                fprintf(arch, "%f\t",sigma[i][j]);
-            }else{
-                fprintf(arch, "null\t");
-            }
-        }
-        fprintf(arch, "\n");  
-    }
+    // fprintf(arch, "\nMatrix sigma\n");
+    // for (int i = 0; i < size; i++)
+    // {
+    //     for (int j = 0; j < size; j++)
+    //     {   if (i != j)
+    //         { 
+    //             fprintf(arch, "%f\t",sigma[i][j]);
+    //         }else{
+    //             fprintf(arch, "null\t");
+    //         }
+    //     }
+    //     fprintf(arch, "\n");  
+    // }
 
     // fprintf(arch, "\nMatrix xSy\n");
     // for (int i = 0; i < size; i++)
@@ -412,24 +478,109 @@ void imprimir_datos(INTERVAL C_XY[size][size], float d_XY[size][size], float sig
     //     }
         
     // }
+    // for (int i = 0; i < 30; i++)
+    // {
+    //     for (int j = 0; j < 3; j++)
+    //     {
+    //         fprintf(arch,"%f \t", fky[i][j]);
+    //         //fkx[j][i]=fky[i][j]; 
+    //     }
+    //     fprintf(arch,"\n");
+    // }
+    // fprintf(arch,"\n\n");
+    // for (int i = 0; i < 3; i++)
+    // {
+    //     for (int j = 0; j < 30; j++)
+    //     {
+    //         fprintf(arch,"%f \t", fkx[i][j]);
+    //         //fky[j][i]=fkx[i][j]; 
+    //     }
+    //     fprintf(arch,"\n");
+    // }
 
-    fprintf(arch, "\nValores xSy\n");
+    //strictOR = xPry
+    //weakOR = sXy
+    fprintf(arch, "Valores\n");
     for (int i = 0; i < size; i++)
     {
-        
-        fprintf(arch, "%d\n", xSyM[i]); 
+        fprintf(arch, "Solucion no. %d \t\t", _x[i].index+1);
+        fprintf(arch, "xSy: %d  xPry: %d\t\t", _x[i]._xSy,_x[i]._xPry);
+        fprintf(arch, "Valores de la solucion: ");
+        for (int j = 0; j < k; j++)
+        {
+            fprintf(arch, "%f ",fkx[j][_x[i].index]);
+        }
+        fprintf(arch, "\n");
     }
 
-    fprintf(arch, "\nValores xPry\n");
-    for (int i = 0; i < size; i++)
-    {
-        
-        fprintf(arch, "%d\n", xPryM[i]); 
-    }
+    fprintf(arch, "\nMejores soluciones\n");
+    bool original = true; //Original IMOACOr?
+	int strictOR = _x[0]._xPry;
+	int weakOR = _x[0]._xSy;
     
     for (int i = 0; i < size; i++)
     {
-        fprintf(arch, "Indice: %d\n",i+1);
+        int breakline = 0;
+        for (int j = 0; j < k; j++)
+        {
+            if (_x[i]._xPry <= strictOR)
+            {
+                strictOR = _x[i]._xPry;
+                if (_x[i]._xSy <= weakOR)
+                {
+                    weakOR = _x[i]._xSy;
+                    fprintf(arch, "%f", fkx[j][_x[i].index]);
+                    breakline = 1;
+                }
+                
+            }
+            if (j != k - 1 && breakline)
+            {
+                fprintf(arch, " ");
+            }
+        }
+        if(breakline){
+		    fprintf(arch, "\n");
+        }
+        
     }
+    
+    //strictOR = xPry
+    //weakOR = sXy
+    SOLUTION x_;
+    x_ = _x[0];
 
+    // fprintf(arch,"\n\n");
+    // fprintf(arch, "\nDistancia Ecuclidiana\n");
+    // for (int i = 0; i < size; i++)
+    // {
+    //     if (x_.index != _x[i].index)
+    //     {
+    //         for (int j = 0; j < k; j++)
+    //         {
+    //             fprintf(arch,"%f\t",euclidiana(fkx[j][i], fkx[j][x_.index]));
+    //         }
+    //     }else{
+    //         fprintf(arch,"NULL");
+    //     }
+    //     fprintf(arch,"\n");
+        
+    // }
+    // fprintf(arch,"\n\n");
+    // fprintf(arch, "\nDistancia de Chebyshev\n");
+    // for (int i = 0; i < size; i++)
+    // {
+    //     if (x_.index != _x[i].index)
+    //     {
+    //         for (int j = 0; j < k; j++)
+    //         {
+    //             fprintf(arch,"%f\t",chebyshev(fkx[j][i], fkx[j][x_.index]));
+    //         }
+    //     }else{
+    //         fprintf(arch,"NULL");
+    //     }
+    //     fprintf(arch,"\n");
+        
+    // }
+    fclose(arch);
 }

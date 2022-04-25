@@ -1,6 +1,11 @@
 #ifndef __INTERVALS_H
 #define __INTERVALS_H
 #include<stdbool.h>
+#define max(a,b) (a > b) ? a : b
+
+float beta;
+int k;
+int size;
 
 typedef struct INTERVAL {
     float lower;
@@ -15,13 +20,15 @@ typedef struct COALITION{
     float dxy;
 }COALITION;
 
-INTERVAL VectorW[100], vectorQ[100], vectorV[100], lambda;
-float fky[30][3], fkx[3][30], beta;
+typedef struct SOLUTION{
+    int index;
+    int _xSy, _xPry;
+}SOLUTION;
 
-void run(int);
-void initValuesK2();
-void initValuesK5();
-void initValuesK10();
+INTERVAL VectorW[100], vectorQ[100], vectorV[100], lambda;
+float fky[30][3], fkx[3][30];
+
+void run();
 
 float PED(INTERVAL, INTERVAL);
 

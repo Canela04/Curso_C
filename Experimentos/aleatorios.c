@@ -42,6 +42,7 @@ int compare_float(const void *p, const void *q){
 	float a, b;
 	a = *(float *) p;
 	b = *(float *) q;
+	//menor a mayor
 	if(a<b){
 		return -1;
 	}
@@ -90,16 +91,16 @@ int main(int argc, char const *argv[])
 			for ( i = 0; i < k; i++)
 			{
 				base[i] = generateRandomValue(0,1);
-				//printf("base[%d]= %.2f\n", i+1, base[i]);
+				printf("base[%d]= %.2f\n", i+1, base[i]);
 				
 			}// 1
 			qsort(base, k, sizeof(float), &compare_float);
-			//printf("Ordenado\n");
-/*			for ( i = 0; i < k; i++)
+			printf("Ordenado\n");
+			for ( i = 0; i < k; i++)
 			{
 				printf("base[%d]= %.2f\n", i+1, base[i]);
 			}// 1.5
-*/
+
 			//correccion: generar n-1, numeros aleatorios
 			for ( i = 0; i < k; i++)
 			{

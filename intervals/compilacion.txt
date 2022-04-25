@@ -1,1 +1,5 @@
-gcc concordancia.c outranking.c -o discordancia 
+compilación
+gcc concordancia.c outranking.c -o validacion -lm
+
+ejecución
+./validacion DTLZ1_3D_DM1_config.txt DTLZ1_3D_DM1_Solutions.txt 3 
