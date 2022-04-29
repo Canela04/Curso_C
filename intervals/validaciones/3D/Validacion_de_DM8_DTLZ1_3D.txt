@@ -1,0 +1,47 @@
+Valores	Size: 33
+Solucion no. 9 		xSy: 11  xPry: 0		Valores de la solucion: 0.291950 0.826377 0.000000 
+Solucion no. 17 		xSy: 10  xPry: 0		Valores de la solucion: 0.211378 1.000000 0.000000 
+Solucion no. 23 		xSy: 10  xPry: 0		Valores de la solucion: 0.494440 0.342365 0.138947 
+Solucion no. 15 		xSy: 4  xPry: 0		Valores de la solucion: 0.484406 0.220741 0.109028 
+Solucion no. 19 		xSy: 3  xPry: 0		Valores de la solucion: 0.625700 0.000000 0.338925 
+Solucion no. 27 		xSy: 3  xPry: 0		Valores de la solucion: 0.244246 0.000000 0.874863 
+Solucion no. 25 		xSy: 1  xPry: 0		Valores de la solucion: 0.000000 0.211944 0.758384 
+Solucion no. 29 		xSy: 1  xPry: 0		Valores de la solucion: 0.940030 0.195730 0.000000 
+Solucion no. 31 		xSy: 1  xPry: 0		Valores de la solucion: 0.000000 0.234658 0.789997 
+Solucion no. 28 		xSy: 0  xPry: 0		Valores de la solucion: 0.000000 0.816396 0.078828 
+Solucion no. 11 		xSy: 10  xPry: 1		Valores de la solucion: 0.263563 0.736675 0.000000 
+Solucion no. 12 		xSy: 10  xPry: 1		Valores de la solucion: 0.281678 0.736034 0.000000 
+Solucion no. 16 		xSy: 9  xPry: 1		Valores de la solucion: 0.242468 0.753864 0.019550 
+Solucion no. 1 		xSy: 5  xPry: 1		Valores de la solucion: 0.261507 0.422962 0.179293 
+Solucion no. 7 		xSy: 5  xPry: 1		Valores de la solucion: 0.670066 0.196160 0.083353 
+Solucion no. 26 		xSy: 5  xPry: 1		Valores de la solucion: 0.594347 0.452543 0.000000 
+Solucion no. 6 		xSy: 3  xPry: 1		Valores de la solucion: 0.835159 0.221392 0.008025 
+Solucion no. 10 		xSy: 3  xPry: 1		Valores de la solucion: 0.545648 0.217290 0.080455 
+Solucion no. 2 		xSy: 2  xPry: 1		Valores de la solucion: 0.612476 0.000000 0.225611 
+Solucion no. 24 		xSy: 2  xPry: 1		Valores de la solucion: 0.217333 0.000000 0.688655 
+Solucion no. 30 		xSy: 2  xPry: 1		Valores de la solucion: 0.259233 0.000000 0.685493 
+Solucion no. 5 		xSy: 9  xPry: 2		Valores de la solucion: 0.225224 0.671976 0.000000 
+Solucion no. 21 		xSy: 9  xPry: 2		Valores de la solucion: 0.213470 0.665489 0.000000 
+Solucion no. 18 		xSy: 1  xPry: 2		Valores de la solucion: 0.237386 0.000000 0.640932 
+Solucion no. 32 		xSy: 0  xPry: 2		Valores de la solucion: 0.873685 0.005732 0.048018 
+Solucion no. 33 		xSy: 2  xPry: 3		Valores de la solucion: 0.609975 0.247179 0.049047 
+Solucion no. 13 		xSy: 1  xPry: 3		Valores de la solucion: 0.659718 0.000000 0.159931 
+Solucion no. 14 		xSy: 1  xPry: 3		Valores de la solucion: 0.662906 0.000000 0.159859 
+Solucion no. 8 		xSy: 7  xPry: 4		Valores de la solucion: 0.459825 0.545071 0.000000 
+Solucion no. 3 		xSy: 6  xPry: 7		Valores de la solucion: 0.338610 0.529916 0.000000 
+Solucion no. 20 		xSy: 6  xPry: 7		Valores de la solucion: 0.286952 0.541172 0.000000 
+Solucion no. 4 		xSy: 6  xPry: 8		Valores de la solucion: 0.358208 0.517182 0.000000 
+Solucion no. 22 		xSy: 5  xPry: 9		Valores de la solucion: 0.223248 0.498347 0.028027 
+
+Mejores soluciones
+0.291950 0.826377 0.000000
+0.211378 1.000000 0.000000
+0.494440 0.342365 0.138947
+0.484406 0.220741 0.109028
+0.625700 0.000000 0.338925
+0.244246 0.000000 0.874863
+0.000000 0.211944 0.758384
+0.940030 0.195730 0.000000
+0.000000 0.234658 0.789997
+0.000000 0.816396 0.078828
+Total: 30

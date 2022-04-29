@@ -4,13 +4,11 @@
 
 int main(int argc, char const *argv[])
 {   
-    int row1 = 10, col1 = 3;
-    int row2 = 3, col2 = 10;
-    int fkx[row1][col1];
-    int fky[row2][col2];
+    int row1 = 1500, col1 = 1500;
+    int row2 = 1500, col2 = 1500;
+    float fkx[row1][col1];
+    float fky[row2][col2];
     int x = 0;
-    
-
     
     
     for (int i = 0; i < row1; i++)
@@ -18,7 +16,7 @@ int main(int argc, char const *argv[])
         for (int j = 0; j < col1; j++)
         {
             fkx[i][j] = x++;
-            printf("%d\t",fkx[i][j]);
+            printf("%f\t",fkx[i][j]);
         }
         printf("\n"); 
     }
@@ -60,7 +58,7 @@ int main(int argc, char const *argv[])
         for (int j = 0; j <col2; j++)
         {
             //fky[i][j] = x++;
-            printf("%d\t",fky[i][j]);
+            printf("%f\t",fky[i][j]);
         }
         printf("\n");
         

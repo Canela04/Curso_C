@@ -5,7 +5,8 @@
 
 float beta;
 int k;
-int size;
+float fky[4000][3], fkx[3][4000];
+//int size;
 
 typedef struct INTERVAL {
     float lower;
@@ -26,9 +27,8 @@ typedef struct SOLUTION{
 }SOLUTION;
 
 INTERVAL VectorW[100], vectorQ[100], vectorV[100], lambda;
-float fky[30][3], fkx[3][30];
 
-void run();
+void run(int, int, int);
 
 float PED(INTERVAL, INTERVAL);
 
@@ -37,7 +37,8 @@ float PED2(float  intA, INTERVAL intB);
 float coalitions(INTERVAL, float);
 COALITION concordance_index(int, int, int);
 float discordance_index();
-void read_values(char const *, char const *);
+void read_DM(int, int);
+int read_solutions(int, int);
 
 float outranking();
 int xSy(float (*matrix_sigma)[*], int, int);

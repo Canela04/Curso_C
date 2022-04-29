@@ -5,6 +5,7 @@
 #include"intervals.h"
 #include<stdbool.h>
 #include<math.h>
+int dim;
 
 float PED(INTERVAL  intA, INTERVAL intB){
     float ped;
@@ -70,13 +71,12 @@ float discordance_index(int i, int j, int z){
     return d_index;
 }
 
-void read_values(char const *arch, char const *arch2){
-    int objectives = 0;
+void read_DM(int current_dm, int current_DTLZ){
     char str[100];
-	sprintf(str, "DMs/%s", arch);
+	sprintf(str, "DMs/DTLZ%d_%dD_DM%d_config.txt", current_DTLZ, k, current_dm);
     FILE *in = fopen(str, "r");
     if(in==NULL){
-        perror("Error en la apertura del archivo de DM\n");
+        printf("Error en la apertura del archivo de DM: %s\n", str);
         exit(1);
     }
  
@@ -103,7 +103,6 @@ void read_values(char const *arch, char const *arch2){
     	            VectorW[cont_in].lower= atof(ptr); 
     	            ptr = strtok(NULL, delim);
     	            VectorW[cont_in].upper= atof(ptr);
-                    objectives++;
     	        }//weight
     	        if (linea == 3)
     	        {
@@ -123,18 +122,20 @@ void read_values(char const *arch, char const *arch2){
     	    linea++;
     	}
     fclose(in);
-    k=objectives;
-    printf("k=%d\n", objectives);
+    
+}
+
+int read_solutions(int current_dm, int current_DTLZ){
     char str2[100];
-	sprintf(str2, "Soluciones/%s", arch2);
+	sprintf(str2, "Soluciones/DM%d_DTLZ%d_%dD_solutions.txt", current_dm, current_DTLZ, k);
     FILE *in2 = fopen(str2, "r");
     if(in2==NULL){
-        perror("Error en la apertura del archivo de soluciones\n");
+        printf("Error en la apertura del archivo de soluciones %s\n", str2);
         exit(2);
     }
  
     //char buffer[5000];
-    linea = 0;
+    int linea = 0;
     char buffer2[5000];
 
     while (fgets(buffer2,2000,in2))
@@ -151,13 +152,12 @@ void read_values(char const *arch, char const *arch2){
     	}
     	linea++;
     }
-    size = linea;
     //printf("tamanio: %d\n", size);
     fclose(in2);
-
-    for (int i = 0; i < 30; i++)
+    
+    for (int i = 0; i < linea; i++)
     {
-        for (int j = 0; j < 3; j++)
+        for (int j = 0; j < k; j++)
         {
             //printf("%f \t", fky[i][j]);
             fkx[j][i]=fky[i][j]; 
@@ -174,6 +174,8 @@ void read_values(char const *arch, char const *arch2){
         }
         printf("\n");
     }*/
+    printf("size: %d\nk: %d\n", linea, k);
+    return linea;
     
 }
 
@@ -197,7 +199,7 @@ bool xdominatey(int i, int j){
 	}
 }
 
-int xSy(float matrix_sigma[size][size], int i, int j){
+int xSy(float matrix_sigma[dim][dim], int i, int j){
     if(matrix_sigma[i][j] >= beta){
         return 1;
     }else{
@@ -206,7 +208,7 @@ int xSy(float matrix_sigma[size][size], int i, int j){
     //return matrix_sigma[i][j] >= beta;
 }
 
-int xPry(float matrix_sigma[size][size], int i, int j){
+int xPry(float matrix_sigma[dim][dim], int i, int j){
     //return xdominatey(i, j) || (xSy(matrix_sigma, i, j) && !xSy(matrix_sigma, j, i));
     if(xdominatey(i, j) || (xSy(matrix_sigma, i, j) && !xSy(matrix_sigma, j, i))){
         return 1;
@@ -280,12 +282,18 @@ float euclidiana(float xi, float x){
     return d;
 }
 
-void run(){
-    float sigma[size][size];
+void run(int current_dm, int current_DTLZ, int size){
+    dim = size;
+    printf("inicia outranking de DM%d_DTLZ%d_%dD.txt\n", current_dm, current_DTLZ, k);
+    printf("sizee= %d\n", size);
     INTERVAL C_XY[size][size];
+   printf("breakpoint 0.3\n");
+    float sigma[size][size];
+    printf("breakpoint 0.6\n");
     float d_XY[size][size];
+    printf("breakpoint 0.9\n");
     COALITION sumW;
-
+    printf("breakpoint 1\n");
     for (int i = 0; i < size; i++)
     {   
         for (int j = 0; j < size; j++)
@@ -329,9 +337,7 @@ void run(){
             }
         } 
     }//matriz analogica de concordancia, discordancia y sigma
-
-    int xSy_matrix[size][size];
-    int xPry_matrix[size][size];
+    //printf("breakpoint 2\n");
 
     // for (int i = 0; i < size; i++)
     // {
@@ -348,8 +354,8 @@ void run(){
     // int xSyM[k][size];
     // int xPryM[k][size];
 
-    int xSyM[size];
-    int xPryM[size];
+    // int xSyM[size];
+    // int xPryM[size];
     SOLUTION _x[size]; 
     
         for (int i = 0; i < size; i++)
@@ -374,17 +380,19 @@ void run(){
             }
 
         }
-    qsort(_x, size, sizeof(SOLUTION), (int (*)(const void *, const void *))&compare); 
-    imprimir_datos(C_XY, d_XY, sigma, _x);
-    printf("Terminado!\n");
+    //printf("breakpoint 3\n");
     
-
+    qsort(_x, size, sizeof(SOLUTION), (int (*)(const void *, const void *))&compare); 
+    printf("Termina outranking\n");
+    imprimir_datos(C_XY, d_XY, sigma, _x, current_dm, current_DTLZ, size);
+    printf("Terminada validacion DM%d_DTLZ%d_%dD.txt\n\n", current_dm, current_DTLZ, k);
+    
 }
 
-void imprimir_datos(INTERVAL C_XY[size][size], float d_XY[size][size], float sigma[size][size], SOLUTION _x[size]){
+void imprimir_datos(INTERVAL C_XY[dim][dim], float d_XY[dim][dim], float sigma[dim][dim], SOLUTION _x[dim], int current_dm, int current_DTLZ, int size){
     FILE *arch;
     char str[100];
-    sprintf(str, "resultados.txt");
+    sprintf(str, "validaciones/Validacion_de_DM%d_DTLZ%d_%dD.txt", current_dm, current_DTLZ, k);
     arch = fopen(str, "w");
     if(arch == NULL){
 		printf("Error! The file %s couldn't be created\n", str);
@@ -500,7 +508,8 @@ void imprimir_datos(INTERVAL C_XY[size][size], float d_XY[size][size], float sig
 
     //strictOR = xPry
     //weakOR = sXy
-    fprintf(arch, "Valores\n");
+    fprintf(arch, "Valores\tSize: %d\n", size);
+    int totalsoluciones=0;
     for (int i = 0; i < size; i++)
     {
         fprintf(arch, "Solucion no. %d \t\t", _x[i].index+1);
@@ -530,6 +539,7 @@ void imprimir_datos(INTERVAL C_XY[size][size], float d_XY[size][size], float sig
                 {
                     weakOR = _x[i]._xSy;
                     fprintf(arch, "%f", fkx[j][_x[i].index]);
+                    totalsoluciones++;
                     breakline = 1;
                 }
                 
@@ -544,6 +554,7 @@ void imprimir_datos(INTERVAL C_XY[size][size], float d_XY[size][size], float sig
         }
         
     }
+    fprintf(arch, "Total: %d\n",totalsoluciones);
     
     //strictOR = xPry
     //weakOR = sXy
