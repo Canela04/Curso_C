@@ -52,13 +52,23 @@ COALITION concordance_index(int i,int j,int z){
     sumW.lowerD= 0;
     sumW.upperD= 0;
     sumW.dxy=0;
+    printf("Para k = %d\n",z+1);
+    printf("x%d= %f y%d=%f ... %f - %f \n", i+1, fkx[z][i], j+1,fkx[z][j], fkx[z][i], fkx[z][j]);
     
     if(coalitions(vectorQ[z], (fkx[z][i]-fkx[z][j])) >= 0.5 ){
+        printf("cxy\n");
+        
         sumW.lowerC = VectorW[z].lower;
         sumW.upperC = VectorW[z].upper;
+
+        // printf("%f\n",VectorW[z].lower);
+        // printf("%f\n",VectorW[z].upper);
     }else{
+        printf("dxy\n");
         sumW.lowerD = VectorW[z].lower;
         sumW.upperD = VectorW[z].upper;
+        // printf("%f\n",VectorW[z].lower);
+        // printf("%f\n",VectorW[z].upper);
         sumW.dxy = PED2(fkx[z][j]-fkx[z][i],vectorV[z]);
     }
     return sumW;
@@ -164,16 +174,16 @@ int read_solutions(int current_dm, int current_DTLZ){
         }
         //printf("\n");
     }
-    //printf("\n\n");
-    /*for (int i = 0; i < 3; i++)
+    printf("\n\n");
+    for (int i = 0; i < 3; i++)
     {
-        for (int j = 0; j < 30; j++)
+        for (int j = 0; j < 5; j++)
         {
             printf("%f \t", fkx[i][j]);
             //fky[j][i]=fkx[i][j]; 
         }
         printf("\n");
-    }*/
+    }
     printf("size: %d\nk: %d\n", linea, k);
     return linea;
     
@@ -210,7 +220,7 @@ int xSy(float matrix_sigma[dim][dim], int i, int j){
 
 int xPry(float matrix_sigma[dim][dim], int i, int j){
     //return xdominatey(i, j) || (xSy(matrix_sigma, i, j) && !xSy(matrix_sigma, j, i));
-    if(xdominatey(i, j) || (xSy(matrix_sigma, i, j) && !xSy(matrix_sigma, j, i))){
+    if(xdominatey(j, i) || (xSy(matrix_sigma, j, i) && !xSy(matrix_sigma, i, j))){
         return 1;
     }else{
         return 0;
@@ -285,17 +295,18 @@ float euclidiana(float xi, float x){
 void run(int current_dm, int current_DTLZ, int size){
     dim = size;
     printf("inicia outranking de DM%d_DTLZ%d_%dD.txt\n", current_dm, current_DTLZ, k);
-    printf("sizee= %d\n", size);
+   // printf("sizee= %d\n", size);
     INTERVAL C_XY[size][size];
-   printf("breakpoint 0.3\n");
+   //printf("breakpoint 0.3\n");
     float sigma[size][size];
-    printf("breakpoint 0.6\n");
+    //printf("breakpoint 0.6\n");
     float d_XY[size][size];
-    printf("breakpoint 0.9\n");
+    //printf("breakpoint 0.9\n");
     COALITION sumW;
-    printf("breakpoint 1\n");
+    //printf("breakpoint 1\n");
     for (int i = 0; i < size; i++)
     {   
+        //float wk_lowerC = 0, wk_upperC=0, wk_lowerD = 0, wk_upperD = 0, dxy=-999999;
         for (int j = 0; j < size; j++)
         {
             float wk_lowerC = 0, wk_upperC=0, wk_lowerD = 0, wk_upperD = 0, dxy=-999999;
@@ -314,18 +325,30 @@ void run(int current_dm, int current_DTLZ, int size){
                     }
 
                 }
+                printf("Sumatoria W_ en cxy: %f\n", wk_lowerC);
+                printf("Sumatoria W- en cxy: %f\n", wk_upperC);
+                printf("Sumatoria W_ en dxy: %f\n", wk_lowerD);
+                printf("Sumatoria W- en dxy: %f\n", wk_upperD);
+                
+                
 
                 if((wk_lowerC + wk_upperD) >= 1){
                     C_XY[i][j].lower=wk_lowerC;
+                    printf("Entre 1\n");
                 }else{
                     C_XY[i][j].lower=(1-wk_upperD);
+                    printf("Entre 2\n");
                 }
+                
                 if ((wk_upperC + wk_lowerD)<=1)
                 {
                     C_XY[i][j].upper = wk_upperC;
+                    printf("Entre 3\n");
                 }else{
                     C_XY[i][j].upper = (1-wk_lowerD);
+                    printf("Entre 4\n");
                 }
+                printf("CXY_ : %f\tCXY- : %f\n", C_XY[i][j].lower, C_XY[i][j].upper);
 
                 d_XY[i][j] = 1-dxy;
 
@@ -373,7 +396,7 @@ void run(int current_dm, int current_DTLZ, int size){
                     xPryM[k][i] += xPry(sigma,j,i);*/
 
                     _x[i]._xSy += xSy(sigma,i,j);
-                    _x[i]._xPry += xPry(sigma,j,i);
+                    _x[i]._xPry += xPry(sigma,i,j);
 
                 }
 
@@ -400,49 +423,49 @@ void imprimir_datos(INTERVAL C_XY[dim][dim], float d_XY[dim][dim], float sigma[d
 	}
     int i, j;
 
-    // fprintf(arch, "\nIndice de concordancia\n");
-    // for (int i = 0; i < size; i++)
-    // {
-    //     for (int j = 0; j < size; j++)
-    //     {   if (i != j)
-    //         {
-    //             fprintf(arch, "%f,%f\t",C_XY[i][j].lower,C_XY[i][j].upper);
-    //         }else{
-    //             fprintf(arch,"null\t");
-    //         }
+    fprintf(arch, "\nIndice de concordancia\n");
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {   if (i != j)
+            {
+                fprintf(arch, "%f,%f\t",C_XY[i][j].lower,C_XY[i][j].upper);
+            }else{
+                fprintf(arch,"null\t");
+            }
             
-    //     }
-    //     fprintf(arch,"\n");  
-    // }
+        }
+        fprintf(arch,"\n");  
+    }
 
-    // fprintf(arch, "\nIndice de  discordancia\n");
-    // for (int i = 0; i < size; i++)
-    // {
-    //     for (int j = 0; j < size; j++)
-    //     {   if (i != j)
-    //         { 
-    //             fprintf(arch, "%f\t",d_XY[i][j]);
-    //         }else{
-    //             fprintf(arch, "null\t");
-    //         }
+    fprintf(arch, "\nIndice de  discordancia\n");
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {   if (i != j)
+            { 
+                fprintf(arch, "%f\t",d_XY[i][j]);
+            }else{
+                fprintf(arch, "null\t");
+            }
             
-    //     }
-    //     fprintf(arch, "\n");  
-    // }
+        }
+        fprintf(arch, "\n");  
+    }
 
-    // fprintf(arch, "\nMatrix sigma\n");
-    // for (int i = 0; i < size; i++)
-    // {
-    //     for (int j = 0; j < size; j++)
-    //     {   if (i != j)
-    //         { 
-    //             fprintf(arch, "%f\t",sigma[i][j]);
-    //         }else{
-    //             fprintf(arch, "null\t");
-    //         }
-    //     }
-    //     fprintf(arch, "\n");  
-    // }
+    fprintf(arch, "\nMatrix sigma\n");
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {   if (i != j)
+            { 
+                fprintf(arch, "%f\t",sigma[i][j]);
+            }else{
+                fprintf(arch, "null\t");
+            }
+        }
+        fprintf(arch, "\n");  
+    }
 
     // fprintf(arch, "\nMatrix xSy\n");
     // for (int i = 0; i < size; i++)
@@ -554,7 +577,7 @@ void imprimir_datos(INTERVAL C_XY[dim][dim], float d_XY[dim][dim], float sigma[d
         }
         
     }
-    fprintf(arch, "Total: %d\n",totalsoluciones);
+    fprintf(arch, "xdTotal: %d\n",totalsoluciones);
     
     //strictOR = xPry
     //weakOR = sXy

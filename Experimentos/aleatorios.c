@@ -54,16 +54,20 @@ int compare_float(const void *p, const void *q){
 
 int main(int argc, char const *argv[])
 {
+	char buffer[100];
+	int goOn=1;
+	while (goOn)
+	{
+	
     float low;
     srand(time(NULL));
     float x;
-    int k , intentos = 0, goOn=1;//cantidad de numeros
+    int k , intentos = 0;//cantidad de numeros
     k = 3;
 	float base[k], wp[k];
-    float tmp, auxLow, auxUp, sumLow=0, sumUp=0, epsilon;
+    float tmp, auxLow=0, auxUp=0, sumLow=0, sumUp=0, epsilon;
 	
 	epsilon = 0.03;
-	int i, j;
 
 	FILE *archivo;
 	char str[100];
@@ -88,7 +92,7 @@ int main(int argc, char const *argv[])
 		/*while(goOn){
 			auxLow = 0;
 			auxUp = 0;*/
-			for ( i = 0; i < k; i++)
+			for (int i = 0; i < k; i++)
 			{
 				base[i] = generateRandomValue(0,1);
 				printf("base[%d]= %.2f\n", i+1, base[i]);
@@ -96,13 +100,13 @@ int main(int argc, char const *argv[])
 			}// 1
 			qsort(base, k, sizeof(float), &compare_float);
 			printf("Ordenado\n");
-			for ( i = 0; i < k; i++)
+			for (int i = 0; i < k; i++)
 			{
 				printf("base[%d]= %.2f\n", i+1, base[i]);
 			}// 1.5
 
 			//correccion: generar n-1, numeros aleatorios
-			for ( i = 0; i < k; i++)
+			for ( int i = 0; i < k; i++)
 			{
 				if (i==0)
 				{
@@ -115,7 +119,7 @@ int main(int argc, char const *argv[])
 				}
 				//printf("wp[%d]= %.2f\n", i+1, wp[i]);
 			}// 2
-			for ( i = 0; i < k; i++)
+			for (int i = 0; i < k; i++)
 			{
 				iVectorW[i].lower = max(0, wp[i] - epsilon);
 				iVectorW[i].upper = min(1, wp[i] + epsilon);
@@ -138,7 +142,7 @@ int main(int argc, char const *argv[])
 
 
 
-		for(i = 0;i < k; i++){
+		for(int i = 0;i < k; i++){
 			fprintf(archivo, "%.2f %.2f", iVectorW[i].lower, iVectorW[i].upper);
 			if(i == (k-1)){
 				fprintf(archivo, "\n");
@@ -150,7 +154,7 @@ int main(int argc, char const *argv[])
 		printf("\nInferiores: %f\nSuperiores: %f\n",auxLow,auxUp);
 
 		//VECTOR INDIFERENCIA
-		for(i = 0;i < k; i++){
+		for(int i = 0;i < k; i++){
 			iVectorQ[i].lower = generateRandomValue(0.01, 0.04);
 			iVectorQ[i].upper = generateRandomValue(iVectorQ[i].lower + 0.01, 0.06);
 			fprintf(archivo, "%.2f %.2f", iVectorQ[i].lower, iVectorQ[i].upper);
@@ -162,7 +166,7 @@ int main(int argc, char const *argv[])
 		}
 
 		//VECTOR DE VETO
-		for(i = 0;i < k; i++){
+		for(int i = 0; i < k; i++){
 			iVectorV[i].lower = generateRandomValue(iVectorQ[i].upper  * 3, (iVectorQ[i].upper * 4));
 			iVectorV[i].upper = generateRandomValue(iVectorV[i].lower, (iVectorV[i].lower * 2));
 			fprintf(archivo, "%.2f %.2f", iVectorV[i].lower, iVectorV[i].upper);
@@ -174,50 +178,12 @@ int main(int argc, char const *argv[])
 		}
 
 		fclose(archivo);
-	/*}else{
-		char buffer[5000];
-    	int linea = 0;
-    	while (fgets(buffer,2000,archivo))
-    	{
-    	    char delim[] = " ,";
-    	    char *ptr = strtok(buffer, delim);
-    	    int cont_in=0;
-    	    while (ptr != NULL)
-    	    {
-				if(linea == 0){
-    	            lambda.lower = atof(ptr);
-    	            ptr = strtok(NULL, delim);
-    	            lambda.upper = atof(ptr);
-    	        }//lambda
-    	        if(linea == 1){
-    	            beta = atof(ptr);
-    	        }//beta
-    	        if (linea == 2)
-    	        {
-    	            iVectorW[cont_in].lower= atof(ptr); 
-    	            ptr = strtok(NULL, delim);
-    	            iVectorW[cont_in].upper= atof(ptr);
-    	        }//weight
-    	        if (linea == 3)
-    	        {
-    	            iVectorQ[cont_in].lower= atof(ptr); 
-    	            ptr = strtok(NULL, delim);
-    	            iVectorQ[cont_in].upper= atof(ptr);
-    	        }//indifference
-    	        if (linea == 4)
-    	        {
-    	            iVectorV[cont_in].lower= atof(ptr); 
-    	            ptr = strtok(NULL, delim);
-    	            iVectorV[cont_in].upper= atof(ptr);
-    	        }//veto
-    	        ptr = strtok(NULL, delim);
-    	        cont_in++;
-    	    }
-    	    linea++;
-    	}
-    	fclose(archivo);
-	}*/
-
+		printf("Precione 0 para terminar\n");
+		scanf("%99s", buffer);
+		if (strcmp("0", buffer) == 0){
+			goOn =0;
+		}
+	}
     return 0;
 }
 

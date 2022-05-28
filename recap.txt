@@ -1,0 +1,45 @@
+namespace ConsumirWS
+{
+    public partial class Home : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void btnSumar_Click(object sender, EventArgs e)
+        {
+            WSDemo.DemoSoapClient Servicio = new WSDemo.DemoSoapClient();
+            lblResultado.Text = Servicio.Suma(int.Parse(txtNuhmero1.Text), int.Parse(txtNumero2.Text)).ToString();
+        }
+    }
+}
+
+
+
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Home.aspx.cs" Inherits="ConsumirWS.Home" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <h1>Consumir web Services desde ASP.NET</h1>
+                <asp:Label ID="lblNumero1" Text="Numero 1: " runat="server"/>
+                <asp:TextBox ID="txtNuhmero1" runat="server"/>
+                    <hr />
+                <asp:Label ID="lblNumero2" Text="Numero 2: " runat="server"/>
+                <asp:TextBox ID="txtNumero2" runat="server"/>
+                    <hr />
+                <asp:Button ID="btnSumar" Text="Sumar" runat="server" OnClick="btnSumar_Click" />
+                    <hr />
+                <asp:Label ID="lblResultado" runat="server"/>
+        </div>
+    </form>
+</body>
+</html>

@@ -8,8 +8,8 @@ int main(int argc, char const *argv[])
 {  
     int b = atoi(argv[1]);
     k=b;
-    int dm = 10;
-    int DTLZs = 2;
+    int dm = 1;
+    int DTLZs = 1;
     int size;
     //read_values(argv[1], argv[2]);
     //run();
@@ -18,9 +18,9 @@ int main(int argc, char const *argv[])
     // {
         // for (int j = 1; j <= DTLZs; j++)
         // {
-            read_DM(5,2);
-            size = read_solutions(5,2);
-            run(5, 2, size);
+            read_DM(1,2);
+            size = read_solutions(1,2);
+            run(1, 2, size);
         //}
         
     //}
