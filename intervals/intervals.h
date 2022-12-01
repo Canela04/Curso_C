@@ -5,7 +5,7 @@
 
 float beta;
 int k;
-float fky[4000][3], fkx[3][4000];
+float fky[4000][10], fkx[10][4000], fkz[200][10];
 //int size;
 
 typedef struct INTERVAL {
@@ -46,5 +46,6 @@ int xPry(float (*matrix_sigma) [*], int, int);
 bool xdominatey();
 float chebyshev(float, float);
 float euclidiana(float, float);
+void find_execution();
 
 #endif

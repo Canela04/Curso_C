@@ -7,7 +7,9 @@
 int main(int argc, char const *argv[])
 {  
     int b = atoi(argv[1]);
+    printf("el valor de B es: %d\n", b);
     k=b;
+    printf("el valor de K es: %d\n", k);
     int dm = 1;
     int DTLZs = 1;
     int size;
@@ -18,9 +20,10 @@ int main(int argc, char const *argv[])
     // {
         // for (int j = 1; j <= DTLZs; j++)
         // {
-            read_DM(1,2);
-            size = read_solutions(1,2);
-            run(1, 2, size);
+            read_DM(1,1);
+            size = read_solutions(1,1);
+            printf("Size vale: %d\n", size);
+            run(1, 1, size);
         //}
         
     //}

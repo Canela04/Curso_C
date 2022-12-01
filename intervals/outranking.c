@@ -6,6 +6,7 @@
 #include<stdbool.h>
 #include<math.h>
 int dim;
+int dim_fkz;
 
 float PED(INTERVAL  intA, INTERVAL intB){
     float ped;
@@ -52,11 +53,11 @@ COALITION concordance_index(int i,int j,int z){
     sumW.lowerD= 0;
     sumW.upperD= 0;
     sumW.dxy=0;
-    printf("Para k = %d\n",z+1);
-    printf("x%d= %f y%d=%f ... %f - %f \n", i+1, fkx[z][i], j+1,fkx[z][j], fkx[z][i], fkx[z][j]);
+    //printf("Para k = %d\n",z+1);
+    //printf("x%d= %f y%d=%f ... %f - %f \n", i+1, fkx[z][i], j+1,fkx[z][j], fkx[z][i], fkx[z][j]);
     
     if(coalitions(vectorQ[z], (fkx[z][i]-fkx[z][j])) >= 0.5 ){
-        printf("cxy\n");
+        //printf("cxy\n");
         
         sumW.lowerC = VectorW[z].lower;
         sumW.upperC = VectorW[z].upper;
@@ -64,7 +65,7 @@ COALITION concordance_index(int i,int j,int z){
         // printf("%f\n",VectorW[z].lower);
         // printf("%f\n",VectorW[z].upper);
     }else{
-        printf("dxy\n");
+        //printf("dxy\n");
         sumW.lowerD = VectorW[z].lower;
         sumW.upperD = VectorW[z].upper;
         // printf("%f\n",VectorW[z].lower);
@@ -175,15 +176,16 @@ int read_solutions(int current_dm, int current_DTLZ){
         //printf("\n");
     }
     printf("\n\n");
-    for (int i = 0; i < 3; i++)
-    {
-        for (int j = 0; j < 5; j++)
-        {
-            printf("%f \t", fkx[i][j]);
-            //fky[j][i]=fkx[i][j]; 
-        }
-        printf("\n");
-    }
+    printf("Valor de K: %d\n", k);
+    // for (int i = 0; i < 10; i++)
+    // {
+    //     for (int j = 0; j < 62; j++)
+    //     {
+    //         printf("%f \t", fkx[i][j]);
+    //         //fky[j][i]=fkx[i][j]; 
+    //     }
+    //     printf("\n");
+    // }
     printf("size: %d\nk: %d\n", linea, k);
     return linea;
     
@@ -325,30 +327,30 @@ void run(int current_dm, int current_DTLZ, int size){
                     }
 
                 }
-                printf("Sumatoria W_ en cxy: %f\n", wk_lowerC);
-                printf("Sumatoria W- en cxy: %f\n", wk_upperC);
-                printf("Sumatoria W_ en dxy: %f\n", wk_lowerD);
-                printf("Sumatoria W- en dxy: %f\n", wk_upperD);
+                // printf("Sumatoria W_ en cxy: %f\n", wk_lowerC);
+                // printf("Sumatoria W- en cxy: %f\n", wk_upperC);
+                // printf("Sumatoria W_ en dxy: %f\n", wk_lowerD);
+                // printf("Sumatoria W- en dxy: %f\n", wk_upperD);
                 
                 
 
                 if((wk_lowerC + wk_upperD) >= 1){
                     C_XY[i][j].lower=wk_lowerC;
-                    printf("Entre 1\n");
+                    //printf("Entre 1\n");
                 }else{
                     C_XY[i][j].lower=(1-wk_upperD);
-                    printf("Entre 2\n");
+                    //printf("Entre 2\n");
                 }
                 
                 if ((wk_upperC + wk_lowerD)<=1)
                 {
                     C_XY[i][j].upper = wk_upperC;
-                    printf("Entre 3\n");
+                    //printf("Entre 3\n");
                 }else{
                     C_XY[i][j].upper = (1-wk_lowerD);
-                    printf("Entre 4\n");
+                    //printf("Entre 4\n");
                 }
-                printf("CXY_ : %f\tCXY- : %f\n", C_XY[i][j].lower, C_XY[i][j].upper);
+                //printf("CXY_ : %f\tCXY- : %f\n", C_XY[i][j].lower, C_XY[i][j].upper);
 
                 d_XY[i][j] = 1-dxy;
 
@@ -412,6 +414,131 @@ void run(int current_dm, int current_DTLZ, int size){
     
 }
 
+void find_execution(float fkz[dim_fkz][k], int current_dm, int current_DTLZ){
+    int executions = 30;
+    int valid_flag = 0;
+    int exec_found = 0;
+    int brk = 0;
+    for(int e = 0; e < executions; e++)
+    {
+        char str2[100];
+        printf("DM: %d\n", current_dm);
+	    sprintf(str2, "Executions/original_DM%d_DTLZ%d_%dD_R%d.pof", current_dm, current_DTLZ, k, e+1);
+        FILE *in2 = fopen(str2, "r");
+        if(in2==NULL){
+            printf("Error en la apertura del archivo de ejecuciones %s\n", str2);
+            exit(2);
+        }
+        printf("Abriendo el archivo: %s\n", str2);
+    
+        //char buffer[5000];
+        int linea = 0;
+        char buffer2[5000];
+
+        while (fgets(buffer2,2000,in2))
+        {
+        	char delim[] = " ";
+        	char *ptr = strtok(buffer2, delim);
+        	int cont_in=0;
+        	while (ptr != NULL)
+        	{
+                fky[linea][cont_in] = atof(ptr);
+                ptr = strtok(NULL, delim);
+        	    cont_in++;
+        	}
+        	linea++;
+        }
+        //printf("tamanio: %d\n", size);
+        fclose(in2);
+
+        for (int i = 0; i < linea; i++)
+        {
+            for (int j = 0; j < k; j++)
+            {
+                printf("%f \t", fky[i][j]);
+                //fkx[j][i]=fky[i][j]; 
+            }
+            printf("\n");
+        }
+        printf("size: %d\n", linea);
+        printf("\n\n");
+        //printf("Valor de K: %d\n", k);
+        // for (int i = 0; i < 10; i++)
+        // {
+        //     for (int j = 0; j < 62; j++)
+        //     {
+        //         printf("%f \t", fkx[i][j]);
+        //         //fky[j][i]=fkx[i][j]; 
+        //     }
+        //     printf("\n");
+        // }
+
+        //Impresion de el vector de X*
+        for (int i = 0; i < dim_fkz; i++)
+        {
+            for (int j = 0; j < k; j++)
+            {
+                printf("%f \t", fkz[i][j]);
+                //fkx[j][i]=fky[i][j]; 
+            }
+            printf("\n");
+        }
+
+        for(int i=0; i < linea; i++)
+        {
+            for(int z = 0; z < dim_fkz; z++)
+            {
+                valid_flag = 0;
+
+                for(int j = 0; j < k; j++)
+                {   
+                    // if(i <= dim_fkz)
+                    // {
+                    //     if(fky[i][j] == fkz[i][j])
+                    //     {
+                    //         valid_flag++;
+                    //     }
+                    // }
+                    if(fkz[z][j] == fky[i][j])
+                    {
+                        valid_flag++;
+                    }
+                }
+                //printf("Valor de V_F: %d\n", valid_flag);
+                if (valid_flag == (k))
+                {
+                    printf("Respuesta encontrada: \n");
+                    for(int j = 0; j < k; j++){
+                        printf("%f \t", fkz[i][j]);
+                    }
+                    printf("\n");
+                    exec_found = e;
+                    brk = 1;
+                }
+                if(brk == 1){break;}
+            }
+            if(brk == 1){break;}
+            // printf("Valor de K: %d\nValor de V_F: %d\n", k, valid_flag);
+            // if (valid_flag == (k-1))
+            // {
+            //     printf("Respuesta encontrada: \n");
+            //     for(int j = 0; j < k; j++){
+            //         printf("%f \t", fkz[i][j]);
+            //     }
+            //     printf("\n");
+            //     exec_found = executions;
+            //     break;
+            // }
+            // valid_flag = 0;
+        }
+        if(brk == 1){break;}
+        else{printf("No encontre la solución en: %s\n", str2);}
+    }
+    printf("Mejor solucion en la ejecución: %d Para el DM%d en DTLZ%d_D%d\n", exec_found+1, current_dm, current_DTLZ, k);
+    //Compra .pof vs X*
+
+}
+
 void imprimir_datos(INTERVAL C_XY[dim][dim], float d_XY[dim][dim], float sigma[dim][dim], SOLUTION _x[dim], int current_dm, int current_DTLZ, int size){
     FILE *arch;
     char str[100];
@@ -422,50 +549,52 @@ void imprimir_datos(INTERVAL C_XY[dim][dim], float d_XY[dim][dim], float sigma[d
 		exit(-1);
 	}
     int i, j;
-
-    fprintf(arch, "\nIndice de concordancia\n");
-    for (int i = 0; i < size; i++)
-    {
-        for (int j = 0; j < size; j++)
-        {   if (i != j)
-            {
-                fprintf(arch, "%f,%f\t",C_XY[i][j].lower,C_XY[i][j].upper);
-            }else{
-                fprintf(arch,"null\t");
-            }
+    
+    //print values
+    #pragma region
+    // fprintf(arch, "\nIndice de concordancia\n");
+    // for (int i = 0; i < size; i++)
+    // {
+    //     for (int j = 0; j < size; j++)
+    //     {   if (i != j)
+    //         {
+    //             fprintf(arch, "%f,%f\t",C_XY[i][j].lower,C_XY[i][j].upper);
+    //         }else{
+    //             fprintf(arch,"null\t");
+    //         }
             
-        }
-        fprintf(arch,"\n");  
-    }
+    //     }
+    //     fprintf(arch,"\n");  
+    // }
 
-    fprintf(arch, "\nIndice de  discordancia\n");
-    for (int i = 0; i < size; i++)
-    {
-        for (int j = 0; j < size; j++)
-        {   if (i != j)
-            { 
-                fprintf(arch, "%f\t",d_XY[i][j]);
-            }else{
-                fprintf(arch, "null\t");
-            }
+    // fprintf(arch, "\nIndice de  discordancia\n");
+    // for (int i = 0; i < size; i++)
+    // {
+    //     for (int j = 0; j < size; j++)
+    //     {   if (i != j)
+    //         { 
+    //             fprintf(arch, "%f\t",d_XY[i][j]);
+    //         }else{
+    //             fprintf(arch, "null\t");
+    //         }
             
-        }
-        fprintf(arch, "\n");  
-    }
+    //     }
+    //     fprintf(arch, "\n");  
+    // }
 
-    fprintf(arch, "\nMatrix sigma\n");
-    for (int i = 0; i < size; i++)
-    {
-        for (int j = 0; j < size; j++)
-        {   if (i != j)
-            { 
-                fprintf(arch, "%f\t",sigma[i][j]);
-            }else{
-                fprintf(arch, "null\t");
-            }
-        }
-        fprintf(arch, "\n");  
-    }
+    // fprintf(arch, "\nMatrix sigma\n");
+    // for (int i = 0; i < size; i++)
+    // {
+    //     for (int j = 0; j < size; j++)
+    //     {   if (i != j)
+    //         { 
+    //             fprintf(arch, "%f\t",sigma[i][j]);
+    //         }else{
+    //             fprintf(arch, "null\t");
+    //         }
+    //     }
+    //     fprintf(arch, "\n");  
+    // }
 
     // fprintf(arch, "\nMatrix xSy\n");
     // for (int i = 0; i < size; i++)
@@ -528,6 +657,7 @@ void imprimir_datos(INTERVAL C_XY[dim][dim], float d_XY[dim][dim], float sigma[d
     //     }
     //     fprintf(arch,"\n");
     // }
+    #pragma endregion
 
     //strictOR = xPry
     //weakOR = sXy
@@ -547,43 +677,53 @@ void imprimir_datos(INTERVAL C_XY[dim][dim], float d_XY[dim][dim], float sigma[d
 
     fprintf(arch, "\nMejores soluciones\n");
     bool original = true; //Original IMOACOr?
-	int strictOR = _x[0]._xPry;
-	int weakOR = _x[0]._xSy;
+	int strictOR = _x[0]._xPry;//stricOR
+	int weakOR = _x[0]._xSy;//weakOR
+    dim_fkz=0;
     
     for (int i = 0; i < size; i++)
     {
         int breakline = 0;
         for (int j = 0; j < k; j++)
         {
-            if (_x[i]._xPry <= strictOR)
+            if (_x[i]._xPry == strictOR && _x[i]._xSy == weakOR)
             {
-                strictOR = _x[i]._xPry;
-                if (_x[i]._xSy <= weakOR)
-                {
-                    weakOR = _x[i]._xSy;
+                //strictOR = _x[i]._xPry;
+                //if (_x[i]._xSy <= weakOR)
+                //{
+                    //weakOR = _x[i]._xSy;
                     fprintf(arch, "%f", fkx[j][_x[i].index]);
-                    totalsoluciones++;
+                    fkz[dim_fkz][j] = fkx[j][_x[i].index];
+                    //find_execution(i, j, current_dm, current_DTLZ);
                     breakline = 1;
-                }
+                //}
+
                 
             }
             if (j != k - 1 && breakline)
             {
                 fprintf(arch, " ");
             }
+            
+            //aqui va la funcion
         }
         if(breakline){
 		    fprintf(arch, "\n");
+            dim_fkz++;
+            totalsoluciones++;
         }
-        
     }
-    fprintf(arch, "xdTotal: %d\n",totalsoluciones);
+    printf("Total dim_fkz: %d\n", dim_fkz);
+    printf("******Find executions*******\n");
+    find_execution(fkz, current_dm, current_DTLZ);
+    fprintf(arch, "Total mejores: %d\n", totalsoluciones);
     
     //strictOR = xPry
     //weakOR = sXy
     SOLUTION x_;
     x_ = _x[0];
 
+    #pragma region 
     // fprintf(arch,"\n\n");
     // fprintf(arch, "\nDistancia Ecuclidiana\n");
     // for (int i = 0; i < size; i++)
@@ -616,5 +756,7 @@ void imprimir_datos(INTERVAL C_XY[dim][dim], float d_XY[dim][dim], float sigma[d
     //     fprintf(arch,"\n");
         
     // }
+    #pragma endregion
+
     fclose(arch);
 }
